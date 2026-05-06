@@ -1,0 +1,217 @@
+/* ==========================================================================
+ * 缘份居 API 平台 (Yuanfenju API Platform) 核心样式表
+ * 风格：现代 B2B 科技感 + 东方雅致（暗金主题色）
+ * ========================================================================== */
+
+:root {
+    /* 主题颜色变量：你可以随时在这里修改整个插件的色调 */
+    --yfj-primary: #c99a5b;        /* 主色调：雅致金 */
+    --yfj-primary-hover: #b38548;  /* 按钮悬浮色 */
+    --yfj-text-dark: #2c3e50;      /* 主标题颜色 */
+    --yfj-text-body: #4a5568;      /* 正文颜色 */
+    --yfj-border: #e2e8f0;         /* 边框颜色 */
+    --yfj-bg-light: #f8fafc;       /* 浅色背景 */
+    --yfj-bg-card: #ffffff;        /* 卡片背景 */
+    --yfj-danger: #e53e3e;         /* 报错颜色 */
+    --yfj-demo-bg: #fefcbf;        /* Demo模式提示背景 */
+    --yfj-demo-text: #b7791f;      /* Demo模式提示文字 */
+    --yfj-radius: 8px;             /* 全局圆角 */
+    --yfj-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* --- 1. 容器主框架 --- */
+.yfj-form-container {
+    max-width: 600px;
+    margin: 30px auto;
+    background: var(--yfj-bg-card);
+    padding: 30px;
+    border-radius: var(--yfj-radius);
+    box-shadow: var(--yfj-shadow);
+    border: 1px solid var(--yfj-border);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--yfj-text-body);
+    box-sizing: border-box;
+}
+
+.yfj-form-container * {
+    box-sizing: border-box;
+}
+
+/* --- 2. 表单元素 --- */
+.yfj-ajax-form .form-group {
+    margin-bottom: 20px;
+}
+
+.yfj-ajax-form label {
+    display: block;
+    font-weight: 600;
+    color: var(--yfj-text-dark);
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.yfj-ajax-form input[type="text"],
+.yfj-ajax-form input[type="date"],
+.yfj-ajax-form input[type="time"],
+.yfj-ajax-form select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--yfj-border);
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: var(--yfj-bg-light);
+    color: var(--yfj-text-dark);
+    transition: all 0.3s ease;
+}
+
+.yfj-ajax-form input:focus,
+.yfj-ajax-form select:focus {
+    outline: none;
+    border-color: var(--yfj-primary);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(201, 154, 91, 0.2);
+}
+
+/* --- 3. 提交按钮 --- */
+.yfj-ajax-form button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--yfj-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    letter-spacing: 1px;
+}
+
+.yfj-ajax-form button[type="submit"]:hover {
+    background-color: var(--yfj-primary-hover);
+}
+
+.yfj-ajax-form button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+.yfj-ajax-form button[type="submit"]:disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* --- 4. 优雅的加载动画 (Spinner) --- */
+.yfj-loading {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--yfj-text-body);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.yfj-loading::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+    border: 3px solid var(--yfj-border);
+    border-top-color: var(--yfj-primary);
+    border-radius: 50%;
+    animation: yfj-spin 1s linear infinite;
+}
+
+@keyframes yfj-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- 5. 结果展示区 (八字、紫微等通用) --- */
+.yfj-result-area {
+    margin-top: 25px;
+    animation: yfj-fade-in 0.5s ease;
+}
+
+@keyframes yfj-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 演示模式横幅 */
+.yfj-demo-notice {
+    background-color: var(--yfj-demo-bg);
+    color: var(--yfj-demo-text);
+    padding: 12px 15px;
+    border-radius: 6px;
+    border-left: 4px solid var(--yfj-primary);
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* 具体的卡片样式 (例如八字排盘结果) */
+.bazi-result-card {
+    background: var(--yfj-bg-light);
+    border: 1px solid var(--yfj-border);
+    border-radius: var(--yfj-radius);
+    padding: 25px;
+}
+
+.bazi-result-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--yfj-border);
+    color: var(--yfj-text-dark);
+    font-size: 18px;
+    text-align: center;
+}
+
+.bazi-result-card ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.bazi-result-card li {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--yfj-border);
+    line-height: 1.6;
+}
+
+.bazi-result-card li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.bazi-result-card li strong {
+    color: var(--yfj-text-dark);
+    display: inline-block;
+    width: 90px; /* 让左侧标签对齐 */
+}
+
+/* 错误提示 */
+.yfj-error-msg {
+    background-color: #fff5f5;
+    color: var(--yfj-danger);
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid var(--yfj-danger);
+    font-weight: 500;
+}
+
+/* --- 6. 移动端适配 --- */
+@media (max-width: 480px) {
+    .yfj-form-container {
+        padding: 20px;
+        margin: 15px;
+    }
+    .bazi-result-card li strong {
+        display: block;
+        width: auto;
+        margin-bottom: 4px;
+    }
+}
