@@ -28,9 +28,9 @@
 
 *(请将下列链接替换为您真实的截图链接，Alt 文本已做极致 SEO 优化)*
 
-| WordPress 八字排盘前台表单 | 紫微斗数排盘与流年分析结果 | WordPress 测算插件后台 API 配置 |
+| WordPress 八字排盘前台表单 | 八字排盘分析结果 | WordPress 测算插件后台 API 配置 |
 |:---:|:---:|:---:|
-| ![WordPress八字排盘与算命表单前端展示](https://via.placeholder.com/300x200?text=Bazi+Form) | ![紫微斗数流盘分析与流年财运前端展示](https://via.placeholder.com/300x200?text=Ziwei+Result) | ![缘份居WordPress测算插件后台API密钥配置](https://via.placeholder.com/300x200?text=WP+Admin+Setting) |
+| ![WordPress八字排盘与算命表单前端展示](https://doc.yuanfenju.com/assets/img/wpstep/step3-2.jpg) | ![八字排盘分析结果展示](https://doc.yuanfenju.com/assets/img/wpstep/step3-3.jpg) | ![缘份居WordPress测算插件后台API密钥配置](https://doc.yuanfenju.com/assets/img/wpstep/step2-1.jpg) |
 
 ---
 
