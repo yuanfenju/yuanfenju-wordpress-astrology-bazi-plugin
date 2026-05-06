@@ -74,7 +74,7 @@
 
 如果您是企业级开发者或外包团队，需要基于原生 PHP 或 Laravel / ThinkPHP 等主流 Web 框架进行高度深度的定制开发，欢迎查阅我们提供的底层 API 工具包：
 
-👉 **[缘份居 PHP SDK API 开源仓库](此处替换为你的 SDK 仓库 GitHub 链接)** 
+👉 **[缘份居 PHP SDK API 开源仓库](https://github.com/yuanfenju/yuanfenju-sdk-php)** 
 
 依托我们丰富稳定的 RESTful API，您可以快速交付各类心理测试、算命占星、国学文化类商业项目。
 
