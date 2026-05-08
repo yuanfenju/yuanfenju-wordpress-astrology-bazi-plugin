@@ -70,7 +70,7 @@
 
 ## 📦 下载与快速安装指南
 
-1. 📥 前往本项目的 **[Releases 页面](../../releases/latest)** 下载最新版本的 `yuanfenju-astrology-toolkit.zip` 安装包。（*注意：请勿直接下载 Source Code，务必下载打包好的插件 ZIP 包*）
+1. 📥 前往本项目的 **[官方页面](https://doc.yuanfenju.com/appendix/wordpress.html)** 下载最新版本的 `yuanfenju-astrology-toolkit.zip` 安装包。（*注意：务必下载打包好的插件 ZIP 包*）
 2. ⚙️ 登录您的 WordPress 后台，进入 `插件` -> `安装插件` -> `上传插件`。
 3. 🚀 选择刚才下载的 `.zip` 文件，点击安装并 **启用**。
 4. 📖 详细后台短代码调用方法请参考：**[WordPress 测算插件安装与使用指南](https://doc.yuanfenju.com/appendix/wordpress.html)**。
