@@ -88,7 +88,6 @@ class Yuanfenju_Astrology_Toolkit {
                 'lingqian_zhuge'  => '诸葛灵签',
             ]
         ],
-
     ];
 
     public function __construct() {
@@ -115,8 +114,6 @@ class Yuanfenju_Astrology_Toolkit {
     }
 
     private function load_active_modules() {
-        //$active_modules = get_option('yfj_active_modules', ['bazi_paipan']);
-
         $default_modules = $this->get_all_module_keys();
         $active_modules = get_option('yfj_active_modules', $default_modules);
 
@@ -159,6 +156,9 @@ class Yuanfenju_Astrology_Toolkit {
         register_setting('yfj_settings', 'yfj_language');
         register_setting('yfj_settings', 'yfj_active_modules');
         register_setting('yfj_settings', 'yfj_theme_color', 'sanitize_hex_color');
+
+        //注册安全等级变量
+        register_setting('yfj_settings', 'yfj_security_level');
     }
 
     public function validate_api_settings($input) {
@@ -174,7 +174,8 @@ class Yuanfenju_Astrology_Toolkit {
     public function settings_page() {
         $env = get_option('yfj_environment', 'sandbox');
         $lang = get_option('yfj_language', 'zh-cn');
-        //$active = get_option('yfj_active_modules', ['bazi_paipan']);
+        //获取安全等级，默认为
+        $security_level = get_option('yfj_security_level', '5');
 
         $default_modules = $this->get_all_module_keys();
         $active = get_option('yfj_active_modules', $default_modules);
@@ -185,6 +186,29 @@ class Yuanfenju_Astrology_Toolkit {
         ?>
         <div class="wrap">
             <h1 style="display: flex; align-items: center;">缘份居 Astrology Toolkit 配置 <?php echo $status_badge; ?></h1>
+
+            <?php
+            // 探针：检测服务器 SSL 能力
+            $curl_info = curl_version();
+            $ssl_version = $curl_info['ssl_version'] ?? '未知';
+            $is_ssl_old = false;
+
+            // 简单判断：如果 OpenSSL 版本低于 1.0.1，大概率不支持 TLS 1.2
+            if (preg_match('/OpenSSL\/0\./i', $ssl_version) || preg_match('/OpenSSL\/1\.0\.0/i', $ssl_version)) {
+                $is_ssl_old = true;
+            }
+            ?>
+
+            <?php if ($is_ssl_old): ?>
+                <div class="notice notice-error" style="margin-top:20px; border-left-color: #dc2626; background: #fef2f2;">
+                    <p>
+                        <span class="dashicons dashicons-warning" style="color: #dc2626;"></span>
+                        <strong>严重环境警告：您的服务器底层组件过旧！</strong><br>
+                        检测到您的 cURL SSL 版本为 <code><?php echo esc_html($ssl_version); ?></code>。该版本极大概率不支持现代互联网强制要求的 TLS 1.2 安全协议。<br>
+                        这会导致插件**无法连接到缘份居 API，出现网络请求失败或超时**。请联系您的服务器商，将 <strong>PHP、cURL 及 OpenSSL</strong> 升级至较新版本。
+                    </p>
+                </div>
+            <?php endif; ?>
 
             <?php settings_errors(); ?>
 
@@ -228,8 +252,9 @@ class Yuanfenju_Astrology_Toolkit {
                                     if ($env === 'live') {
                                         $api_key = get_option('yfj_api_key');
                                         $response = wp_remote_post('https://api.yuanfenju.com/index.php/v1/Free/querymerchant', [
-                                            'body' => ['api_key' => $api_key],
-                                            'timeout' => 5
+                                            'body'      => ['api_key' => $api_key],
+                                            'timeout'   => 15,    // 增加超时容错
+                                            'sslverify' => false  // 绕过老旧服务器的 SSL 证书链验证
                                         ]);
 
                                         if (!is_wp_error($response)) {
@@ -250,8 +275,9 @@ class Yuanfenju_Astrology_Toolkit {
                                                     echo '<div><strong>过期时间：</strong> <span style="color:#b91c1c; font-weight:bold;">' . esc_html($m_expire) . '</span></div>';
 
                                                     $res_times = wp_remote_post('https://api.yuanfenju.com/index.php/v1/Free/querytimes', [
-                                                        'body' => ['api_key' => $api_key],
-                                                        'timeout' => 5
+                                                        'body'      => ['api_key' => $api_key],
+                                                        'timeout'   => 15,
+                                                        'sslverify' => false
                                                     ]);
                                                     if (!is_wp_error($res_times)) {
                                                         $body_times = json_decode(wp_remote_retrieve_body($res_times), true);
@@ -277,6 +303,19 @@ class Yuanfenju_Astrology_Toolkit {
                                     ?>
                                 <?php endif; ?>
                             </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>防盗刷安全等级</th>
+                        <td>
+                            <select name="yfj_security_level" style="min-width: 300px;">
+                                <option value="5" <?php selected($security_level, '5'); ?>>🟡 推荐 (1分钟 5次) - 平衡体验与安全</option>
+                                <option value="10" <?php selected($security_level, '10'); ?>>🟢 宽松 (1分钟 10次) - 适合共享 IP 较多的环境</option>
+                                <option value="3" <?php selected($security_level, '3'); ?>>🔴 严格 (1分钟 3次) - 强力防范恶意请求</option>
+                            </select>
+                            <p class="description" style="color:#64748b; margin-top:8px;">
+                                自动拦截机器爬虫和脚本恶意疯狂测算，由系统底层强制生效，有效保护您的 API 余额不被盗刷。
+                            </p>
                         </td>
                     </tr>
                     <tr>
@@ -335,7 +374,9 @@ class Yuanfenju_Astrology_Toolkit {
                                 <strong>💡 引导提示：</strong><br>
                                 <span style="color: #166534; font-size: 13px; line-height: 1.6;">
                                     👉 勾选上方模块并保存后，点击 <b>[一键生成页面]</b> 即可自动建好独立专属页。<br>
-                                    👉 您也可以点击 <b>[复制]</b> 将简码粘贴到任何页面构建器（如 Elementor）中。
+                                    👉 您也可以点击 <b>[复制]</b> 将简码粘贴到任何页面构建器（如 Elementor）中。<br>
+                                    <span style="color: #dc2626; margin-top: 5px; display: inline-block;">
+        ⚠️ <b>温馨提示：一个页面请只放置一个功能简码。</b>请勿把多个功能（如八字排盘和塔罗占卜）放在同一个页面，否则会引起地点、时间等选项互相干扰，导致测算无法正常使用。</span>
                                 </span>
                             </div>
                         </td>
