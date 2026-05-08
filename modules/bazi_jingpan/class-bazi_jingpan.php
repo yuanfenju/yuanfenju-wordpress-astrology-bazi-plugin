@@ -34,6 +34,17 @@ class YFJ_Module_Bazi_jingpan extends YFJ_Base_Module {
     }
 
     /**
+     * 重写基类的请求方法，专门为八字精盘主接口注入底层压缩参数
+     */
+    protected function fetch_api_data($api_url, $payload) {
+        // 悄悄给发往 API 的参数包里塞入 iszip=1
+        $payload['iszip'] = 1;
+
+        // 调用我们在基类写好的、自带智能解压的方法
+        return parent::fetch_api_data($api_url, $payload);
+    }
+
+    /**
      * 沙盒模式下的模拟数据
      */
     protected function get_demo_data($post_data) {

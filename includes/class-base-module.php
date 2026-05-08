@@ -26,6 +26,27 @@ abstract class YFJ_Base_Module {
     public function handle_ajax() {
         check_ajax_referer('yfj_nonce', 'nonce');
 
+        $limit_count = (int) get_option('yfj_security_level', '5');
+        if ($limit_count <= 0) {
+            $limit_count = 10;
+        }
+
+        $client_ip = $_SERVER['REMOTE_ADDR'];
+        // 如果使用了 CDN 或代理，尝试获取真实 IP
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $client_ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+        }
+
+        $rate_limit_key = 'yfj_limit_' . md5($client_ip);
+        $current_requests = (int) get_transient($rate_limit_key);
+
+        if ($current_requests >= $limit_count) {
+            wp_send_json_error('天机不可频繁泄露，请您静心沉淀片刻，1分钟后再结缘测算。');
+            return;
+        }
+
+        set_transient($rate_limit_key, $current_requests + 1, 60);
+
         $env = get_option('yfj_environment', 'sandbox');
         $lang = get_option('yfj_language', 'zh-cn');
 
@@ -63,17 +84,52 @@ abstract class YFJ_Base_Module {
     }
 
     /**
-     * 【新增】：执行实际的远程 API 请求
-     * 将其设为 protected，以便让子类可以重写此方法来实现 Redis/数据库缓存策略
+     * 【生产兼容排错版】：自动 GZIP、跳过 SSL 强校验、提供详细排障
+     *  将其设为 protected，以便让子类可以重写此方法来实现 Redis/数据库缓存或注入压缩参数
      */
     protected function fetch_api_data($api_url, $payload) {
-        $response = wp_remote_post($api_url, ['body' => $payload, 'timeout' => 20]);
 
+        //核心修改点：去掉了强制的 TLS 钩子，直接改为 sslverify => false
+        $response = wp_remote_post($api_url, [
+            'body'      => $payload,
+            'timeout'   => 20,
+            'sslverify' => false // 兼容老旧证书链
+        ]);
+
+        // 诊断 1：网络层是否报错
         if (is_wp_error($response)) {
-            return null;
+            return ['errcode' => -1, 'errmsg' => '网络通信失败: ' . $response->get_error_message()];
         }
 
-        return json_decode(wp_remote_retrieve_body($response), true);
+        $body = wp_remote_retrieve_body($response);
+
+        // ===== 【智能压缩处理逻辑开始】 =====
+        if ( strlen( $body ) >= 2 && bin2hex( substr( $body, 0, 2 ) ) === '1f8b' ) {
+            if ( function_exists( 'gzdecode' ) ) {
+                $decoded_body = @gzdecode( $body );
+                if ( $decoded_body !== false ) {
+                    $body = $decoded_body;
+                } else {
+                    return ['errcode' => -1, 'errmsg' => '核心组件异常：GZIP 字节流解压失败！'];
+                }
+            } else {
+                return ['errcode' => -1, 'errmsg' => '环境缺陷：用户服务器 PHP 未开启 zlib (gzdecode) 扩展！'];
+            }
+        }
+        // ===== 【智能压缩处理逻辑结束】 =====
+
+        $data = json_decode($body, true);
+
+        // 诊断 2：数据解析是否成功
+        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+            $preview = mb_substr(strip_tags($body), 0, 50, 'UTF-8');
+            return [
+                'errcode' => -1,
+                'errmsg' => 'API 数据解析异常: ' . json_last_error_msg() . ' | 原始报文截取: ' . $preview
+            ];
+        }
+
+        return $data;
     }
 
     // 3. 渲染结果视图并返回 JSON
