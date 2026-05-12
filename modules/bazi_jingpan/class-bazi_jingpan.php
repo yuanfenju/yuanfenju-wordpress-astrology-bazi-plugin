@@ -113,6 +113,9 @@ class YFJ_Module_Bazi_jingpan extends YFJ_Base_Module {
         // 1. 安全校验 (防御 CSRF 攻击)
         check_ajax_referer('yfj_nonce', 'nonce');
 
+        // 八字流日流时，高频频率，乘数为 8
+        $this->check_rate_limit('liurishi', 8);
+
         // 2. 检查当前环境
         $env = get_option('yfj_environment', 'sandbox');
 
