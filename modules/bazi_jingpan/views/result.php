@@ -582,6 +582,7 @@ $renderChar = function($char, $size = '18px') use ($getWuxingColor) {
             let formLat = $('#raw_latitude').val() || '';
 
             // 4. 发起 AJAX 请求
+            // 4. 发起 AJAX 请求
             $.post(yfj_globals.ajax_url, {
                 action: 'yfj_get_liurishi',
                 nonce: $('#yfj_nonce_field').val(),
@@ -606,6 +607,22 @@ $renderChar = function($char, $size = '18px') use ($getWuxingColor) {
                 } else {
                     $('#yfj-liurishi-content').html(`<div style="color:#dc2626; text-align:center; padding: 20px;">❌ <?php echo $this->t('获取数据失败：'); ?> ${res.data}</div>`);
                 }
+            }).fail(function(xhr) {
+                // 🚀 核心新增：专门捕获 429 频率超限的逻辑
+                let errorMessage = "<?php echo $this->t('网络请求异常，请稍后再试。'); ?>";
+
+                // 提取基类返回的 429 错误文案
+                if (xhr.status === 429 && xhr.responseJSON && xhr.responseJSON.data) {
+                    errorMessage = xhr.responseJSON.data;
+                }
+
+                // 将原本的 Loading 转圈圈 替换为红色的警告提示
+                $('#yfj-liurishi-content').html(
+                    `<div style="color:#b91c1c; text-align:center; padding: 30px; font-size: 15px; font-weight: bold;">
+                        <span class="dashicons dashicons-warning" style="vertical-align: bottom; font-size: 20px; width: 20px; height: 20px; margin-right: 5px;"></span>
+                        ${errorMessage}
+                    </div>`
+                );
             });
         };
 

@@ -3,7 +3,7 @@ Contributors: yuanfenju
 Tags: chinese astrology, astrology, bazi, ziwei, feng shui
 Requires at least: 5.2
 Tested up to: 6.9
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -100,15 +100,3 @@ You can register for an API key via the Yuanfenju service portal.
 1. Settings Dashboard
 2. Module Management Interface
 3. Frontend Calculator Forms
-
-== Changelog ==
-
-= 2.0.2 =
-* Initial release
-* Added Sandbox Mode
-* Added Live API Mode
-
-== Upgrade Notice ==
-
-= 2.0.2 =
-This is the initial release of the Chinese Astrology & Divination Toolkit. No upgrade actions are required at this time.

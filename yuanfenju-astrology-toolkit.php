@@ -2,7 +2,7 @@
 /*
 Plugin Name: Chinese Astrology & Divination Toolkit – Bazi & Ziwei Tools
 Description: WordPress astrology toolkit for Bazi (Four Pillars), Ziwei Dou Shu, Chinese astrology charts, divination, and daily horoscope tools. Supports shortcode integration, sandbox/live mode, and multilingual output (Simplified Chinese, Traditional Chinese).
-Version: 2.0.2
+Version: 2.1.0
 Author: Yuanfenju
 Author URI: https://doc.yuanfenju.com
 Text Domain: yuanfenju-astrology-toolkit
@@ -10,6 +10,7 @@ Text Domain: yuanfenju-astrology-toolkit
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+define('YFJ_PLUGIN_VERSION', '2.1.0'); //以后发版，全插件只改这一个地方！
 define('YFJ_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('YFJ_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -88,17 +89,41 @@ class Yuanfenju_Astrology_Toolkit {
                 'lingqian_zhuge'  => '诸葛灵签',
             ]
         ],
+
+        // ⚪ 西方占星系统
+        'western_astrology' => [
+            'title' => '⚪ 西方占星系统',
+            'desc'  => '提供西方占星的各类专业星盘排盘与测算，支持从基础本命分析到进阶的行运、推运等复杂星象推演。',
+            'modules' => [
+                'astrology_natal'       => '本命盘',
+                'astrology_synastry'    => '比较盘',
+                'astrology_composite'   => '组合盘',
+                'astrology_transit'     => '行运盘',
+                'astrology_secondaryprogression'  => '次限盘',
+                'astrology_solararc'   => '太阳弧',
+                'astrology_solarreturn'=> '日返照',
+                'astrology_lunarreturn'=> '月返照',
+            ]
+        ],
+
     ];
 
     public function __construct() {
+        // 1. 管理后台相关钩子 (Admin Only)
         add_action('admin_menu', [$this, 'admin_menu']);
         add_action('admin_init', [$this, 'register_settings']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
-        add_action('wp_ajax_yfj_create_page', [$this, 'ajax_create_page']);
+        add_action('admin_notices', [$this, 'check_for_plugin_updates']); //更新提示
 
         $plugin_basename = plugin_basename(__FILE__);
         add_filter("plugin_action_links_{$plugin_basename}", [$this, 'add_plugin_settings_link']);
 
+        // 2. 前台资源与展示 (Frontend)
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
+
+        // 3. 异步交互逻辑 (AJAX)
+        add_action('wp_ajax_yfj_create_page', [$this, 'ajax_create_page']);
+
+        // 4. 加载激活模块 (Core)
         $this->load_active_modules();
     }
 
@@ -128,6 +153,9 @@ class Yuanfenju_Astrology_Toolkit {
         }
     }
 
+    /**
+     * 已考虑星盘单，双的自定义
+     **/
     public function enqueue_assets() {
         wp_enqueue_style('yfj-style', YFJ_PLUGIN_URL . 'assets/css/style.css', [], '2.0.2');
         wp_enqueue_script('yfj-ajax', YFJ_PLUGIN_URL . 'assets/js/yuanfenju-ajax.js', ['jquery'], '2.0.2', true);
@@ -140,8 +168,71 @@ class Yuanfenju_Astrology_Toolkit {
         ]);
 
         $theme_color = get_option('yfj_theme_color', '#c99a5b');
-        $dynamic_css = ":root { --yfj-primary: {$theme_color} !important; --yfj-primary-hover: color-mix(in srgb, {$theme_color} 85%, black) !important; }";
+
+        // 将 Hex 颜色转换为 RGB，方便我们做 Alpha 透明度运算
+        list($r, $g, $b) = sscanf($theme_color, "#%02x%02x%02x");
+
+        $dynamic_css = "
+        :root {
+            /* 插件 UI 基础主题色 */
+            --yfj-primary: {$theme_color} !important;
+            --yfj-primary-hover: rgba({$r}, {$g}, {$b}, 0.85) !important;
+
+            /* ==========================================
+               ✨ 缘份居西占 SVG 智能自适应色彩引擎 ✨
+               ========================================== */
+            
+            /* 1. 主干线条与文字（单盘/双盘通用基底） */
+            --chart-ring-stroke: {$theme_color} !important;
+            --chart-text-color: #334155 !important; 
+
+            /* 2. 背景圆环（利用透明度形成层次感） */
+            --chart-outer-band-color: rgba({$r}, {$g}, {$b}, 0.08) !important;
+            --chart-zodiac-band-color: rgba({$r}, {$g}, {$b}, 0.04) !important;
+            --chart-house-band-color: rgba({$r}, {$g}, {$b}, 0.06) !important;
+            --chart-planet-band-color: transparent !important;
+            --chart-inner-band-color: rgba({$r}, {$g}, {$b}, 0.02) !important;
+            --chart-band-opacity: 1 !important; 
+
+            /* 3. 相位线颜色（保留吉凶语义，采用高级莫兰迪色） */
+            --chart-aspect-hard-color: #ef4444 !important;    
+            --chart-aspect-square-color: #ef4444 !important;  
+            --chart-aspect-soft-color: #10b981 !important;    
+            --chart-aspect-minor-color: #f59e0b !important;   
+            --chart-aspect-opacity: 0.55 !important;          
+            --chart-retrograde-color: #ef4444 !important;     
+
+            /* 4. 单盘专属 */
+            --chart-connector-stroke: rgba({$r}, {$g}, {$b}, 0.4) !important; 
+
+            /* 5. 🌟 双盘 (Synastry) 专属人物色彩隔离 🌟 */
+            --color-person-a: {$theme_color} !important;                /* A盘(内盘)使用网站主题色 */
+            --color-person-b: #64748b !important;                       /* B盘(外盘)使用高级板岩灰，确保高对比度 */
+            --chart-connector-stroke-a: rgba({$r}, {$g}, {$b}, 0.5) !important; /* A盘牵引线 */
+            --chart-connector-stroke-b: rgba(100, 116, 139, 0.4) !important;    /* B盘牵引线 */
+        }";
+
         wp_add_inline_style('yfj-style', $dynamic_css);
+
+
+        // 🚀 核心新增：全局自动定位脚本
+        $js_scroll_fix = "
+            jQuery(document).ajaxSuccess(function(event, xhr, settings) {
+                // 仅针对缘份居插件的 AJAX 请求（以 yfj_ 开头的 action）
+                if (settings.data && settings.data.indexOf('action=yfj_') !== -1) {
+                    setTimeout(function() {
+                        var resultArea = jQuery('.yfj-result-area:visible');
+                        if (resultArea.length > 0) {
+                            // 极致平滑滚动：定位到结果区域顶部，预留 80px 的边距（防止被导航栏遮挡）
+                            jQuery('html, body').animate({
+                                scrollTop: resultArea.offset().top - 80
+                            }, 600); // 600ms 的动画时间，既丝滑又不显拖沓
+                        }
+                    }, 100); // 延迟 100ms 确保 DOM 已渲染完成
+                }
+            });
+        ";
+        wp_add_inline_script('yfj-ajax', $js_scroll_fix);
     }
 
     public function admin_menu() {
@@ -316,6 +407,17 @@ class Yuanfenju_Astrology_Toolkit {
                             <p class="description" style="color:#64748b; margin-top:8px;">
                                 自动拦截机器爬虫和脚本恶意疯狂测算，由系统底层强制生效，有效保护您的 API 余额不被盗刷。
                             </p>
+                            <div style="color: #64748b; font-size: 13px; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 12px; max-width: 600px;">
+                                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                    <span class="dashicons dashicons-shield" style="color: #64748b; margin-top: 2px; font-size: 18px; width: 18px; height: 18px;"></span>
+                                    <div style="flex: 1;">
+                                        <b style="color: #475569;">智能防御说明</b>：<br>
+                                        请根据您的接口额度，合理设置<b>主表单</b>的提交频率（推荐 5～10 次）。<br>
+                                        我们的底层系统已内置分级限流机制：针对八字流盘、紫微流盘中的“流月 / 流日”等高频交互操作，系统会自动采用更宽松的动态策略，在保证接口安全的同时，尽可能减少对正常用户体验的影响。<br>
+                                        您无需额外配置，即可在“恶意防刷”与“正常使用”之间取得平衡。
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -341,9 +443,15 @@ class Yuanfenju_Astrology_Toolkit {
                         <td>
                             <?php $admin_nonce = wp_create_nonce('yfj_admin_nonce'); ?>
 
-                            <div style="max-width: 680px; display: flex; flex-direction: column; gap: 20px;">
-                                <?php foreach($this->module_categories as $cat_id => $category): ?>
-                                    <div style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden;">
+                            <div id="yfj-categories-wrapper" style="max-width: 680px; display: flex; flex-direction: column; gap: 20px;">
+                                <?php
+                                $cat_index = 0; // 引入计数器
+                                foreach($this->module_categories as $cat_id => $category):
+                                    // 判断是否是前 3 个模块，之后的模块默认隐藏
+                                    $is_hidden = $cat_index >= 3 ? 'display: none;' : '';
+                                    $hidden_class = $cat_index >= 3 ? 'yfj-extra-category' : '';
+                                    ?>
+                                    <div class="<?php echo esc_attr($hidden_class); ?>" style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden; <?php echo $is_hidden; ?>">
                                         <div style="background: #f8fafc; padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">
                                             <h4 style="margin: 0; font-size: 14px; color: #0f172a;"><?php echo esc_html($category['title']); ?></h4>
                                             <p style="margin: 4px 0 0 0; font-size: 12px; color: #64748b;"><?php echo esc_html($category['desc']); ?></p>
@@ -367,17 +475,30 @@ class Yuanfenju_Astrology_Toolkit {
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                <?php endforeach; ?>
+                                    <?php
+                                    $cat_index++;
+                                endforeach;
+                                ?>
                             </div>
+
+                            <?php if (count($this->module_categories) > 3): ?>
+                                <div style="max-width: 680px; text-align: center; margin-top: 15px;">
+                                    <button type="button" id="yfj-toggle-categories-btn" class="button" style="border-style: dashed; width: 100%; color: #64748b; padding: 5px 0; background: transparent; transition: all 0.3s;">
+                                        <span class="dashicons dashicons-arrow-down-alt2" style="vertical-align: middle;"></span> <span id="yfj-toggle-text">展开更多高级功能模块（灵签等，未来将支持西方占星）</span>
+                                    </button>
+                                </div>
+                            <?php endif; ?>
 
                             <div style="margin-top: 15px; background: #f0fdf4; border-left: 3px solid #22c55e; padding: 12px 15px; max-width: 650px;">
                                 <strong>💡 引导提示：</strong><br>
                                 <span style="color: #166534; font-size: 13px; line-height: 1.6;">
                                     👉 勾选上方模块并保存后，点击 <b>[一键生成页面]</b> 即可自动建好独立专属页。<br>
                                     👉 您也可以点击 <b>[复制]</b> 将简码粘贴到任何页面构建器（如 Elementor）中。<br>
-                                    <span style="color: #dc2626; margin-top: 5px; display: inline-block;">
-        ⚠️ <b>温馨提示：一个页面请只放置一个功能简码。</b>请勿把多个功能（如八字排盘和塔罗占卜）放在同一个页面，否则会引起地点、时间等选项互相干扰，导致测算无法正常使用。</span>
-                                </span>
+
+                                    <span style="color: #0369a1; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #bbf7d0; display: inline-block;">
+            🌟 <b>页面布局建议：</b>
+            系统支持同页面加载多个功能模块，但为了获得更清晰的页面结构、更好的访客体验与 SEO 表现，建议为八字、紫微、塔罗等功能分别建立独立页面。这样不仅界面更专业，也能让用户操作更加聚焦流畅。
+        </span>
                             </div>
                         </td>
                     </tr>
@@ -423,6 +544,36 @@ class Yuanfenju_Astrology_Toolkit {
                     } else { alert('生成失败: ' + response.data); }
                 });
             }
+
+            // 新增：展开/收起模块的逻辑
+            document.addEventListener('DOMContentLoaded', function() {
+                var toggleBtn = document.getElementById('yfj-toggle-categories-btn');
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', function() {
+                        var hiddenCats = document.querySelectorAll('.yfj-extra-category');
+                        var isExpanded = this.getAttribute('data-expanded') === 'true';
+
+                        hiddenCats.forEach(function(cat) {
+                            // 使用 jQuery 的 slideToggle 如果你想加动画，或者直接改 display
+                            if (isExpanded) {
+                                cat.style.display = 'none';
+                            } else {
+                                cat.style.display = 'block';
+                            }
+                        });
+
+                        if (isExpanded) {
+                            this.innerHTML = '<span class="dashicons dashicons-arrow-down-alt2" style="vertical-align: middle;"></span> 展开更多高级功能模块 (西方占星、灵签等)';
+                            this.setAttribute('data-expanded', 'false');
+                            this.style.background = 'transparent';
+                        } else {
+                            this.innerHTML = '<span class="dashicons dashicons-arrow-up-alt2" style="vertical-align: middle;"></span> 收起高级功能模块';
+                            this.setAttribute('data-expanded', 'true');
+                            this.style.background = '#f8fafc';
+                        }
+                    });
+                }
+            });
         </script>
         <?php
     }
@@ -475,6 +626,46 @@ class Yuanfenju_Astrology_Toolkit {
         $settings_link = '<a href="admin.php?page=yuanfenju-platform">设置</a>';
         array_unshift($links, $settings_link);
         return $links;
+    }
+
+    /**
+     * 轻量级自动更新检测引擎
+     */
+    public function check_for_plugin_updates() {
+        // 只在后台显示，且只有管理员能看到
+        if (!is_admin() || !current_user_can('manage_options')) return;
+
+        $current_version = YFJ_PLUGIN_VERSION; //当前插件的版本号
+        $cache_key = 'yfj_plugin_update_info';
+
+        //每天只去服务器查询一次，避免拖慢 WordPress 后台速度
+        $update_info = get_transient($cache_key);
+        //delete_transient($cache_key); //删除缓存
+
+        if ($update_info === false) {
+            $response = wp_remote_get('https://doc.yuanfenju.com/version.json', ['timeout' => 3]);
+
+            if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+                $update_info = json_decode(wp_remote_retrieve_body($response), true);
+                set_transient($cache_key, $update_info, 12 * HOUR_IN_SECONDS); // 缓存 12 小时
+            } else {
+                $update_info = ['error' => true];
+                set_transient($cache_key, $update_info, 1 * HOUR_IN_SECONDS); // 请求失败缓存 1 小时
+            }
+        }
+
+        // 如果远端版本大于当前版本，则显示升级横幅
+        if (!empty($update_info['version']) && version_compare($current_version, $update_info['version'], '<')) {
+            $new_version = esc_html($update_info['version']);
+            $download_url = esc_url($update_info['download_url'] ?? 'https://doc.yuanfenju.com');
+            $update_desc = esc_html($update_info['description'] ?? '修复了部分已知问题，提升了排盘体验。');
+
+            echo '<div class="notice notice-warning is-dismissible" style="border-left-color: #c99a5b;">';
+            echo '<p><span class="dashicons dashicons-megaphone" style="color: #c99a5b;"></span> <strong>缘份居 Astrology Toolkit 有新版本可用！</strong> (当前版本：'.$current_version.' -> <strong>最新版本：'.$new_version.'</strong>)</p>';
+            echo '<p style="color:#475569;">更新内容：' . $update_desc . '</p>';
+            echo '<p><a href="'.$download_url.'" target="_blank" class="button button-primary" style="background:#c99a5b; border-color:#c99a5b; text-shadow:none;">👉 立即下载更新包</a></p>';
+            echo '</div>';
+        }
     }
 }
 new Yuanfenju_Astrology_Toolkit();

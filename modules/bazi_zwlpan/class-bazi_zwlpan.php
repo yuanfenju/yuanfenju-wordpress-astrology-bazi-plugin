@@ -36,6 +36,9 @@ class YFJ_Module_Bazi_zwlpan extends YFJ_Base_Module {
         // 安全校验
         check_ajax_referer('yfj_nonce', 'nonce');
 
+        // 紫微流盘层级更深，频率更高，乘数为 10
+        $this->check_rate_limit('zwlpan', 10);
+
         // 检查当前环境
         $env = get_option('yfj_environment', 'sandbox');
 

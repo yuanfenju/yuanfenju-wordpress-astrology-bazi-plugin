@@ -557,6 +557,38 @@ $renderZwlCell = function($index) use ($gong_pan, $renderSihua, $base) {
                     // 【翻译修复点】
                     alert('<?php echo $this->t("获取流盘数据失败："); ?>' + res.data);
                 }
+            }).fail(function(xhr) {
+                // 1. 立即取消盘面的 Loading 模糊遮罩
+                $('#yfj-zw-grid-container').removeClass('yfj-loading-mask');
+                $('#yfj-current-pan-status').text('<?php echo $this->t("状态异常"); ?>');
+
+                // 2. 提取后端的 429 防盗刷错误文案
+                let errorMessage = "<?php echo $this->t('网络请求异常，请稍后再试。'); ?>";
+                if (xhr.status === 429 && xhr.responseJSON && xhr.responseJSON.data) {
+                    errorMessage = xhr.responseJSON.data;
+                }
+
+                // 3. 在时间轴选项卡上方，动态插入一个醒目的红色警告横幅
+                let $timelineWrap = $('.yfj-timeline-table').parent();
+                $('.yfj-zw-error-banner').remove(); // 先移除可能存在的旧横幅
+
+                let errorHtml = `
+                    <div class="yfj-zw-error-banner" style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:10px 15px; margin-bottom:15px; border-radius:6px; font-weight:bold; font-size:14px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display:none;">
+                        <span class="dashicons dashicons-warning" style="vertical-align: middle; margin-right:5px;"></span>
+                        ${errorMessage}
+                    </div>
+                `;
+
+                // 将警告横幅加进去并带有向下展开的动画
+                $timelineWrap.before(errorHtml);
+                $('.yfj-zw-error-banner').slideDown(200);
+
+                // 4. 定时 4 秒后自动让警告横幅消失，不干扰用户后续操作
+                setTimeout(function() {
+                    $('.yfj-zw-error-banner').slideUp(300, function() {
+                        $(this).remove();
+                    });
+                }, 4000);
             });
         });
 

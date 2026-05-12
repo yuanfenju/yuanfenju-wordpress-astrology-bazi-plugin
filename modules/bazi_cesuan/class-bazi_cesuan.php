@@ -56,11 +56,6 @@ class YFJ_Module_Bazi_cesuan extends YFJ_Base_Module {
         // 3. 【核心提取】剥离外层的 errcode 状态，只提取 data 节点内容
         $data = $demo_array_json['data'] ?? [];
 
-        // 4. 【测试数据】
-        if (!empty($post_data['name'])) {
-            $data['base_info']['name'] = $demo_name;
-        }
-
         // 5. 返回处理好的干净数据给 process_api_data
         return $data;
     }
