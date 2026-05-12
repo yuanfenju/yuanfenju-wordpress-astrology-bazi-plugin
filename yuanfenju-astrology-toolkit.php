@@ -484,7 +484,7 @@ class Yuanfenju_Astrology_Toolkit {
                             <?php if (count($this->module_categories) > 3): ?>
                                 <div style="max-width: 680px; text-align: center; margin-top: 15px;">
                                     <button type="button" id="yfj-toggle-categories-btn" class="button" style="border-style: dashed; width: 100%; color: #64748b; padding: 5px 0; background: transparent; transition: all 0.3s;">
-                                        <span class="dashicons dashicons-arrow-down-alt2" style="vertical-align: middle;"></span> <span id="yfj-toggle-text">展开更多高级功能模块（灵签等，未来将支持西方占星）</span>
+                                        <span class="dashicons dashicons-arrow-down-alt2" style="vertical-align: middle;"></span> <span id="yfj-toggle-text">展开更多高级功能模块（西方占星、灵签等）</span>
                                     </button>
                                 </div>
                             <?php endif; ?>
