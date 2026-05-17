@@ -303,6 +303,7 @@ class Yuanfenju_Astrology_Toolkit {
 
             <?php settings_errors(); ?>
 
+            <!--
             <div class="notice notice-info is-dismissible" style="margin-top:20px; border-left-color: #c99a5b; background: #fff;">
                 <p>
                     <strong>💡 底层算法支持：</strong>
@@ -310,6 +311,25 @@ class Yuanfenju_Astrology_Toolkit {
                     <a href="https://doc.yuanfenju.com" target="_blank" style="font-weight:bold; color:#c99a5b; text-decoration:none;">
                         <span class="dashicons dashicons-external" style="font-size:16px; vertical-align:middle;"></span> 缘份居国学 API 官方文档
                     </a>
+                </p>
+            </div>
+            !-->
+            <div class="notice notice-info is-dismissible" style="margin-top:20px; border-left-color: #c99a5b; background: #fff; padding-bottom: 5px;">
+                <p style="font-size: 14px;">
+                    <strong>💡 开发者支持与 BUG 反馈</strong><br><br>
+                    本插件的全部命理测算数据均由 <strong>缘份居</strong> 提供实时计算。想要了解更多功能逻辑，请查阅
+                    <a href="https://doc.yuanfenju.com" target="_blank" style="font-weight:bold; color:#c99a5b; text-decoration:none;">
+                        <span class="dashicons dashicons-external" style="font-size:16px; vertical-align:middle;"></span> 缘份居国学 API 官方文档
+                    </a>。
+                </p>
+
+                <p style="margin-top: 10px; font-size: 13px; color: #334155;">
+                    <strong>🐛 BUG 报告：</strong>如果您在测试过程中发现插件代码缺陷或兼容性问题，请将“报错截图+运行环境”发送至技术支持邮箱：
+                    <a href="mailto:admin@yuanfenju.com" style="font-weight: bold; color: #0369a1; text-decoration: none;">admin@yuanfenju.com</a>
+                </p>
+
+                <p style="margin-top: 8px; font-size: 12px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 8px; margin-bottom: 10px;">
+                    <em>(注：该技术支持邮箱仅处理技术性 BUG，不提供 WordPress 基础教学、二次开发与命理解答。)</em>
                 </p>
             </div>
 
