@@ -63,12 +63,35 @@ if (!function_exists('yfj_render_meihua_gua')) {
 
 <style>
     .yfj-mh-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-mh-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; }
 
     .yfj-desc-content { display: grid; grid-template-columns: 1fr; gap: 10px; }
     @media (min-width: 768px) { .yfj-desc-content { grid-template-columns: 1fr 1fr; } }
+
+    /* 梅花易数移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩大面板的整体内边距，释放横向可见空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 压缩单个独立卦象卡片包的内边距 */
+        .yfj-panel-body > div[style*="border: 1px solid #e2e8f0"] { padding: 12px !important; margin-bottom: 20px !important; }
+
+        /* 3. 核心：在手机端将 卦象图 与 象辞解卦区 强制从左右并排改为上下流式排布，杜绝溢出挤压 */
+        .yfj-panel-body div[style*="display: flex; gap: 30px"] {
+            flex-direction: column !important;
+            gap: 15px !important;
+            align-items: center !important;
+        }
+
+        /* 4. 修正象辞文字区域，使其在上下排布时能吃满 100% 的宽度自由折行 */
+        .yfj-panel-body div[style*="flex: 1; min-width: 260px"] {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+    }
 </style>
 
 <div class="yfj-mh-wrapper">

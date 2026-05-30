@@ -20,6 +20,7 @@ $type_name = esc_html($this->t($api_type));
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
@@ -47,6 +48,26 @@ $type_name = esc_html($this->t($api_type));
     /* 具体运势长文本 */
     .yfj-ys-text-box { background: #f1f5f9; padding: 15px; border-radius: 6px; border-left: 3px solid #6366f1; margin-bottom: 20px; font-size: 14px; color: #1e293b; }
     .yfj-ys-text-title { font-size: 12px; font-weight: bold; color: #6366f1; margin-bottom: 5px; text-transform: uppercase; }
+
+    /* 西方星座运势移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 缩小面板整体内边距，给核心文本腾出更多横向空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 优化顶部5个短贴士卡片，强制设为两列或三列自适应，防止挤压文字 */
+        .yfj-ys-tips {
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .yfj-ys-tip-item { padding: 8px 4px; }
+        .yfj-ys-tip-title { font-size: 11px; }
+        .yfj-ys-tip-val { font-size: 13px; }
+
+        /* 3. 稍微调整分数和进度条标签的宽度，避免在极窄屏幕上和数字打架 */
+        .yfj-ys-score-label { width: 65px; font-size: 13px; }
+        .yfj-ys-score-row { gap: 10px; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">

@@ -66,6 +66,7 @@ $gong_order = [3, 4, 5, 2, 8, 6, 1, 0, 7];
 
 <style>
     .yfj-yp-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-yp-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 12px 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; }
     .yfj-panel-body { padding: 20px; font-size: 14px; line-height: 1.8; }
@@ -104,6 +105,27 @@ $gong_order = [3, 4, 5, 2, 8, 6, 1, 0, 7];
 
     .yfj-yp-legend { text-align: center; font-size: 13px; margin-top: 20px; padding: 10px; background: #f8fafc; border-radius: 6px; }
     .yfj-legend-item { display: inline-block; padding: 2px 6px; border-radius: 4px; color: #fff; margin: 0 5px; font-weight: bold; }
+
+    /* 阴盘奇门移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 缩小外层容器的内边距，给九宫格腾出空间 */
+        .yfj-yinpan-container { padding: 20px 10px; margin-top: 25px; }
+
+        /* 收缩暗干（四周悬浮标签）的大小和位置，防止跑偏或溢出 */
+        .yfj-yp-yingan { font-size: 12px; padding: 1px 4px; }
+        .yfj-yp-n1, .yfj-yp-n3 { left: 8%; }
+        .yfj-yp-n2, .yfj-yp-n4 { right: 8%; }
+
+        /* 极度压缩九宫格的缝隙和内边距，防止内容把格子撑破 */
+        .yfj-jiugong-grid { gap: 2px; padding: 2px; }
+        .yfj-gong-box { padding: 4px; min-height: 90px; }
+
+        /* 缩小宫内字体，确保天盘、地盘、八神等能在一行内显示 */
+        .yfj-gong-row1, .yfj-gong-row2 { font-size: 13px; margin-bottom: 2px; }
+        .yfj-gong-row3 { font-size: 14px; }
+        .yfj-status-span { padding: 1px 2px; margin: 0 1px; }
+        .yfj-kong-circle { top: 2px; right: 2px; font-size: 14px; }
+    }
 </style>
 
 <div class="yfj-yp-wrapper">
@@ -151,7 +173,8 @@ $gong_order = [3, 4, 5, 2, 8, 6, 1, 0, 7];
                 ];
                 foreach ($yingan_map as $cls => $idx) {
                     $g = $gong_pan[$idx] ?? [];
-                    if (!empty($g)) {
+                    // 修复空方块：必须暗干有内容，或者有马星标记，才渲染这个外框
+                    if (!empty($g) && (!empty($g['yingan']) || ($g['is_maxing'] ?? 0) == 1)) {
                         echo '<div class="yfj-yp-yingan ' . $cls . '">' . esc_html($g['yingan'] ?? '');
                         if (($g['is_maxing'] ?? 0) == 1) {
                             echo '<span class="yfj-yp-ma">' . $this->t('马') . '</span>';

@@ -26,6 +26,7 @@ $image_url = YFJ_PLUGIN_URL . 'assets/image/lingqian/' . $lang_suffix . '/mazu.j
 
 <style>
     .yfj-lq-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-lq-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; position: relative; }
@@ -37,6 +38,23 @@ $image_url = YFJ_PLUGIN_URL . 'assets/image/lingqian/' . $lang_suffix . '/mazu.j
     .yfj-block-item.is-last-odd { grid-column: 1 / -1; align-items: center; text-align: center; }
     .yfj-block-title { font-weight: bold; color: #0891b2; display: inline-block; margin-bottom: 8px; border-bottom: 1px dashed #a5f3fc; padding-bottom: 6px; font-size: 15px; }
     .yfj-block-content { color: #334155; font-size: 14px; line-height: 1.6; }
+
+    /* 妈祖灵签移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 减小面板内边距，给核心文本腾出更多横向空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 缩小右上角妈祖小画像的尺寸，防止左侧签诗被挤压成窄长条 */
+        .yfj-panel-body > div[style*="float: right"] { width: 85px !important; margin: 0 0 10px 10px !important; }
+
+        /* 3. 核心：将解签的宫格强制改为单列向下排布，杜绝任何右侧溢出和错位 */
+        .yfj-block-grid { grid-template-columns: 1fr; gap: 10px; }
+
+        /* 4. 统一卡片内边距和排版对齐方向 */
+        .yfj-block-item { padding: 12px; }
+        .yfj-block-item.is-last-odd { align-items: flex-start; text-align: left; }
+        .yfj-block-item.is-last-odd > div { text-align: left !important; }
+    }
 </style>
 
 <div class="yfj-lq-wrapper">
@@ -119,8 +137,9 @@ $image_url = YFJ_PLUGIN_URL . 'assets/image/lingqian/' . $lang_suffix . '/mazu.j
     <?php echo $this->get_disclaimer_html(); ?>
 
     <div style="text-align: center; margin-top: 10px;">
-        <button onclick="jQuery('.yfj-result-area').hide(); jQuery('#yfj-qiuqian-ui').fadeIn(); jQuery('.yfj-ajax-form').show();"
-                style="background: #ecfeff; color: #0891b2; border: 1px solid #cffafe; padding: 12px 30px; border-radius: 50px; font-size: 14px; font-weight: bold; cursor: pointer;">
+        <button type="button"
+                onclick="this.disabled=true; this.style.opacity='0.6'; this.innerText='<?php echo $this->t('正在重置...'); ?>'; window.location.reload();"
+                style="background: #e2e8f0; color: #334155; border: none; padding: 12px 30px; border-radius: 50px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
             <?php echo $this->t('返回重求'); ?>
         </button>
     </div>

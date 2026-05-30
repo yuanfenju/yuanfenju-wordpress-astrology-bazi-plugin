@@ -41,9 +41,10 @@ elseif ($lang_opt === 'en-us') { $sf = 'english'; }
 
 <style>
     .yfj-sec-prog-result { font-family: -apple-system, sans-serif; color: #334155; line-height: 1.6; }
+    .yfj-sec-prog-result * { box-sizing: border-box; }
 
     /* 信息头部 */
-    .yfj-info-header { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .yfj-info-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-bottom: 20px; }
     .yfj-info-box { padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; }
 
     /* SVG 容器 */
@@ -62,6 +63,23 @@ elseif ($lang_opt === 'en-us') { $sf = 'english'; }
     .yfj-table th { background: #f9f9f9; padding: 8px; border: 1px solid #ddd; font-weight: bold; color: #333; text-align: center; }
     .yfj-table td { padding: 8px; border: 1px solid #ddd; vertical-align: middle; }
     .yfj-table tr:hover { background: #fcfcfc; }
+
+    /* 次限推运移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩大白框和各个模块的内边距，给文本和表格腾出横向展示空间 */
+        .yfj-info-box { padding: 12px; }
+        .yfj-svg-wrap { padding: 10px; margin-bottom: 15px; }
+        .yfj-table-box { padding: 10px; }
+
+        /* 2. 压缩五个大数据图表的内边距与字体，减小横向滑动的幅度 */
+        .yfj-table th, .yfj-table td { padding: 6px 4px; font-size: 12px; }
+
+        /* 3. 适度调小解析文本区块的内边距 */
+        .yfj-data-section > div[style*="padding: 15px;"] { padding: 12px !important; }
+
+        /* 4. 优化分隔横幅，防止图标在小屏幕上过大 */
+        .yfj-section-banner { padding: 10px; font-size: 13.5px; margin: 20px 0 15px 0; }
+    }
 </style>
 
 <div class="yfj-sec-prog-result">

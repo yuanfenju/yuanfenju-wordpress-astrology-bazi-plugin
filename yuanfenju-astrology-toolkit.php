@@ -2,7 +2,7 @@
 /*
 Plugin Name: Chinese Astrology & Divination Toolkit – Bazi & Ziwei Tools
 Description: WordPress astrology toolkit for Bazi (Four Pillars), Ziwei Dou Shu, Chinese astrology charts, divination, and daily horoscope tools. Supports shortcode integration, sandbox/live mode, and multilingual output (Simplified Chinese, Traditional Chinese).
-Version: 2.1.0
+Version: 2.2.0
 Author: Yuanfenju
 Author URI: https://doc.yuanfenju.com
 Text Domain: yuanfenju-astrology-toolkit
@@ -10,7 +10,7 @@ Text Domain: yuanfenju-astrology-toolkit
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define('YFJ_PLUGIN_VERSION', '2.1.0'); //以后发版，全插件只改这一个地方！
+define('YFJ_PLUGIN_VERSION', '2.2.0'); //以后发版，全插件只改这一个地方！
 define('YFJ_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('YFJ_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -164,29 +164,31 @@ class Yuanfenju_Astrology_Toolkit {
         wp_localize_script('yfj-ajax', 'yfj_globals', [
             'ajax_url'   => admin_url('admin-ajax.php'),
             'err_prefix' => $lang === 'zh-tw' ? '錯誤: ' : '错误: ',
-            'err_net'    => $lang === 'zh-tw' ? '網絡請求失敗，請稍後再試。' : '网络请求失败，请稍后再试。'
+            'err_net'    => $lang === 'zh-tw' ? '網絡請求失敗，請稍後再試。' : '网络请求失败，请稍后再试。',
+            'icon_style' => get_option('yfj_astro_icon_style', 'text'), // 默认使用文字版
+            'lang'       => $lang  // 🔴 核心：把后台配置的简繁体选项传给 JS
         ]);
 
         $theme_color = get_option('yfj_theme_color', '#c99a5b');
+        $astro_theme = get_option('yfj_astro_chart_theme', 'light'); // 获取你后台选择的风格
 
         // 将 Hex 颜色转换为 RGB，方便我们做 Alpha 透明度运算
         list($r, $g, $b) = sscanf($theme_color, "#%02x%02x%02x");
 
+        // ==========================================
+        // 🌟 1. Light 淡色系 (默认/清新白) - 极致纯净，高亮主题色
+        // ==========================================
         $dynamic_css = "
-        :root {
+        :root, .yfj-result-area, .astrology-chart {
             /* 插件 UI 基础主题色 */
             --yfj-primary: {$theme_color} !important;
             --yfj-primary-hover: rgba({$r}, {$g}, {$b}, 0.85) !important;
 
-            /* ==========================================
-               ✨ 缘份居西占 SVG 智能自适应色彩引擎 ✨
-               ========================================== */
-            
             /* 1. 主干线条与文字（单盘/双盘通用基底） */
             --chart-ring-stroke: {$theme_color} !important;
             --chart-text-color: #334155 !important; 
 
-            /* 2. 背景圆环（利用透明度形成层次感） */
+            /* 2. 背景圆环（完美恢复透明度层次感） */
             --chart-outer-band-color: rgba({$r}, {$g}, {$b}, 0.08) !important;
             --chart-zodiac-band-color: rgba({$r}, {$g}, {$b}, 0.04) !important;
             --chart-house-band-color: rgba({$r}, {$g}, {$b}, 0.06) !important;
@@ -194,9 +196,9 @@ class Yuanfenju_Astrology_Toolkit {
             --chart-inner-band-color: rgba({$r}, {$g}, {$b}, 0.02) !important;
             --chart-band-opacity: 1 !important; 
 
-            /* 3. 相位线颜色（保留吉凶语义，采用高级莫兰迪色） */
+            /* 3. 相位线颜色（保留吉凶语义，使用高对比度色彩） */
             --chart-aspect-hard-color: #ef4444 !important;    
-            --chart-aspect-square-color: #ef4444 !important;  
+            --chart-aspect-square-color: #3b82f6 !important;  
             --chart-aspect-soft-color: #10b981 !important;    
             --chart-aspect-minor-color: #f59e0b !important;   
             --chart-aspect-opacity: 0.55 !important;          
@@ -207,13 +209,87 @@ class Yuanfenju_Astrology_Toolkit {
 
             /* 5. 🌟 双盘 (Synastry) 专属人物色彩隔离 🌟 */
             --color-person-a: {$theme_color} !important;                /* A盘(内盘)使用网站主题色 */
-            --color-person-b: #64748b !important;                       /* B盘(外盘)使用高级板岩灰，确保高对比度 */
-            --chart-connector-stroke-a: rgba({$r}, {$g}, {$b}, 0.5) !important; /* A盘牵引线 */
-            --chart-connector-stroke-b: rgba(100, 116, 139, 0.4) !important;    /* B盘牵引线 */
-        }";
+            --color-person-b: #64748b !important;                       /* B盘(外盘)使用高级板岩灰，确保对比 */
+            --chart-connector-stroke-a: rgba({$r}, {$g}, {$b}, 0.5) !important; 
+            --chart-connector-stroke-b: rgba(100, 116, 139, 0.4) !important;    
+        }
+        
+        /* Light 模式专属：白色背景 + 主题色微光阴影 */
+        .yfj-result-area .astrology-chart svg, .yfj-result-area svg.astrology-chart { 
+            background: #ffffff !important; 
+            border-radius: 50%; 
+            box-shadow: 0 0 15px rgba({$r}, {$g}, {$b}, 0.1); 
+        }
+        
+        /* 字体版图标辅助样式 */
+        .yfj-custom-icon { pointer-events: none; }
+        .yfj-custom-text-icon { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; font-weight: bold; }
+        ";
+
+        // ==========================================
+        // 🌟 2. Medium 中色系 (护眼/SaaS灰蓝底) - 现代数据仪表盘风格
+        // ==========================================
+        if ($astro_theme === 'medium') {
+            $dynamic_css .= "
+            :root, .yfj-result-area, .astrology-chart {
+                --chart-text-color: #475569 !important; /* 字体加深，保证在灰底上的阅读性 */
+                
+                /* 骨架线不再是纯灰，而是透出 50% 的主题色，既柔和又有品牌感 */
+                --chart-ring-stroke: rgba({$r}, {$g}, {$b}, 0.5) !important; 
+                
+                /* 护眼浅灰蓝底色 */
+                --chart-outer-band-color: #f1f5f9 !important;
+                
+                /* 星座环和内环微微透出主题色 */
+                --chart-zodiac-band-color: rgba({$r}, {$g}, {$b}, 0.05) !important;
+                --chart-house-band-color: rgba(255, 255, 255, 0.5) !important;
+                --chart-inner-band-color: transparent !important;
+                
+                /* 保持双盘人物颜色，A盘回归主题色 */
+                --color-person-a: {$theme_color} !important;
+                --color-person-b: #64748b !important;
+            }
+            .yfj-result-area .astrology-chart svg, .yfj-result-area svg.astrology-chart { 
+                background: #f1f5f9 !important; 
+                box-shadow: 0 0 15px rgba({$r}, {$g}, {$b}, 0.15); 
+            }
+            ";
+        }
+
+        // ==========================================
+        // 🌟 3. Dark 深色系 (暗黑/科技赛博蓝) - 极客发光风格
+        // ==========================================
+        elseif ($astro_theme === 'dark') {
+            $dynamic_css .= "
+            :root, .yfj-result-area, .astrology-chart {
+                --chart-text-color: #e2e8f0 !important; /* 文字提亮为灰白，保证黑底清晰度 */
+                
+                /* 暗黑模式下，骨架线使用 60% 透明度的主题色，形成发光感 */
+                --chart-ring-stroke: rgba({$r}, {$g}, {$b}, 0.6) !important; 
+                
+                --chart-outer-band-color: transparent !important;
+                --chart-zodiac-band-color: rgba({$r}, {$g}, {$b}, 0.12) !important; /* 星座环采用更强的主题色暗场底 */
+                --chart-house-band-color: rgba(255, 255, 255, 0.03) !important;
+                --chart-inner-band-color: transparent !important;
+                
+                /* 黑底上，相位线需要高饱和度马卡龙色才能看清 */
+                --chart-aspect-hard-color: #fb7185 !important; /* 玫瑰红 */
+                --chart-aspect-soft-color: #2dd4bf !important; /* 蒂芙尼绿 */
+                
+                /* 人物隔离：B盘变亮灰以适配黑底 */
+                --color-person-a: {$theme_color} !important;
+                --color-person-b: #94a3b8 !important; 
+                --chart-connector-stroke-a: rgba({$r}, {$g}, {$b}, 0.6) !important;
+                --chart-connector-stroke-b: rgba(148, 163, 184, 0.4) !important;
+            }
+            .yfj-result-area .astrology-chart svg, .yfj-result-area svg.astrology-chart { 
+                background: #0f172a !important; 
+                box-shadow: 0 0 25px rgba({$r}, {$g}, {$b}, 0.25) !important; 
+            }
+            ";
+        }
 
         wp_add_inline_style('yfj-style', $dynamic_css);
-
 
         // 🚀 核心新增：全局自动定位脚本
         $js_scroll_fix = "
@@ -247,6 +323,10 @@ class Yuanfenju_Astrology_Toolkit {
         register_setting('yfj_settings', 'yfj_language');
         register_setting('yfj_settings', 'yfj_active_modules');
         register_setting('yfj_settings', 'yfj_theme_color', 'sanitize_hex_color');
+
+        //注册星盘图纸配色和图标样式选项
+        register_setting('yfj_settings', 'yfj_astro_chart_theme');
+        register_setting('yfj_settings', 'yfj_astro_icon_style');
 
         //注册安全等级变量
         register_setting('yfj_settings', 'yfj_security_level');
@@ -314,6 +394,7 @@ class Yuanfenju_Astrology_Toolkit {
                 </p>
             </div>
             !-->
+
             <div class="notice notice-info is-dismissible" style="margin-top:20px; border-left-color: #c99a5b; background: #fff; padding-bottom: 5px;">
                 <p style="font-size: 14px;">
                     <strong>💡 开发者支持与 BUG 反馈</strong><br><br>
@@ -456,7 +537,29 @@ class Yuanfenju_Astrology_Toolkit {
                             <span class="description" style="margin-left: 8px;">自定义前端测算界面的主色调。</span>
                         </td>
                     </tr>
-
+                    <tr valign="top">
+                        <th scope="row">星盘图纸配色</th>
+                        <td>
+                            <?php $astro_theme = get_option('yfj_astro_chart_theme', 'light'); ?>
+                            <select name="yfj_astro_chart_theme" id="yfj_astro_chart_theme" style="min-width: 300px;">
+                                <option value="light" <?php selected($astro_theme, 'light'); ?>>淡色系 (现代 / 清新白)</option>
+                                <option value="medium" <?php selected($astro_theme, 'medium'); ?>>中色系 (护眼 / 浅灰底)</option>
+                                <option value="dark" <?php selected($astro_theme, 'dark'); ?>>深色系 (暗黑 / 科技蓝)</option>
+                            </select>
+                            <p class="description">设定星盘的背景色与线条色系。</p>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">星盘符号样式</th>
+                        <td>
+                            <?php $icon_style = get_option('yfj_astro_icon_style', 'text'); ?>
+                            <select name="yfj_astro_icon_style" id="yfj_astro_icon_style" style="min-width: 300px;">
+                                <option value="text" <?php selected($icon_style, 'text'); ?>>文字版 (羊, 牛, 日, 月, 升...)</option>
+                                <option value="symbol" <?php selected($icon_style, 'symbol'); ?>>符号版 (♈, ♉, ☉, ☽, ASC...)</option>
+                            </select>
+                            <p class="description">切换后，前端渲染的星盘将自动替换为对应的占星图标或中文文字。</p>
+                        </td>
+                    </tr>
                     <!-- 【核心战略升级】：按梯队分层展示勾选模块 -->
                     <tr>
                         <th>功能矩阵配置<br><small style="color:#64748b; font-weight:normal;">(开启所需功能)</small></th>
@@ -543,10 +646,11 @@ class Yuanfenju_Astrology_Toolkit {
             }
 
             function yfjAutoCreatePage(moduleKey, moduleName, nonce, btn) {
-                if(!confirm('系统将为您创建“' + moduleName + '”的独立页面，是否继续？')) return;
+                // 移除 confirm 弹窗，点击后直接无感丝滑建页
                 var originalHtml = btn.innerHTML;
                 btn.innerHTML = '生成中...';
-                btn.disabled = true;
+                btn.disabled = true; // 立即禁用按钮，防止用户手快连点多次
+
                 jQuery.post(ajaxurl, {
                     action: 'yfj_create_page',
                     module_key: moduleKey,
@@ -560,8 +664,10 @@ class Yuanfenju_Astrology_Toolkit {
                         actionDiv.style.display = 'block';
                         var prefixTxt = response.data.is_existing ? '<span style="color:#d63638;">(页面已存在)</span> ' : '<span style="color:#16a34a;">(创建成功)</span> ';
                         actionDiv.innerHTML = prefixTxt + '<a href="' + response.data.view_url + '" target="_blank" style="font-weight:bold;">👀 查看</a> | <a href="' + response.data.edit_url + '" target="_blank">✏️ 编辑</a>';
-                        btn.style.display = 'none';
-                    } else { alert('生成失败: ' + response.data); }
+                        btn.style.display = 'none'; // 成功后隐藏原始按钮，保持界面清爽
+                    } else {
+                        alert('生成失败: ' + response.data);
+                    }
                 });
             }
 

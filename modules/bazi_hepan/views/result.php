@@ -16,6 +16,7 @@ if (empty($data) || !is_array($data)) {
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
 
@@ -25,7 +26,7 @@ if (empty($data) || !is_array($data)) {
 
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
 
-    .yfj-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 14px; line-height: 1.6; }
+    .yfj-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; font-size: 14px; line-height: 1.6; }
     .yfj-info-grid strong { color: #1e293b; }
 
     .yfj-badge-red { color: #dc2626; font-weight: 600; }
@@ -35,6 +36,19 @@ if (empty($data) || !is_array($data)) {
     .yfj-bazi-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; margin-top: 15px; }
     .yfj-bazi-table th, .yfj-bazi-table td { border: 1px solid #e2e8f0; padding: 8px; }
     .yfj-bazi-table-partner th, .yfj-bazi-table-partner td { border: 1px solid #c7d2fe; }
+
+    /* 移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 缩小面板内边距，给内部表格腾出更多空间 */
+        .yfj-panel-body { padding: 12px; }
+
+        /* 缩小基本信息的间距 */
+        .yfj-info-grid { gap: 8px; }
+
+        /* 极度压缩八字表格的内边距和字体，让手机端尽量少滑动或不滑动 */
+        .yfj-bazi-table th, .yfj-bazi-table td { padding: 6px 3px; font-size: 12px; }
+        .yfj-bazi-table tr:nth-child(2) td { font-size: 14px !important; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">

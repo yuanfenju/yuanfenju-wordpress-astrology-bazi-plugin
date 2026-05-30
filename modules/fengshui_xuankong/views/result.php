@@ -19,6 +19,7 @@ $pan_info = $base['pan_info'] ?? [];
 
 <style>
     .yfj-xk-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-xk-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; }
@@ -40,6 +41,29 @@ $pan_info = $base['pan_info'] ?? [];
 
     /* 排龙诀辅助样式 */
     .yfj-longjue-red { color: #dc2626; font-weight: bold; }
+
+    /* 玄空风水移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩大面板整体内边距，给核心网格释放更多可见空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 优化 3x3 标准九宫飞星盘和流年命盘的单元格内边距 */
+        .yfj-jiugong-cell { padding: 6px; }
+        .yfj-cell-top { font-size: 15px; }
+        .yfj-cell-mid { font-size: 20px; margin: 2px 0; }
+        .yfj-cell-bot { font-size: 11px; }
+
+        /* 3. 极度压缩 4x4 排龙诀回字形格阵的文字和内边距，确保在小屏幕手机上绝不破格错位 */
+        .yfj-jiugong-container div[style*="grid-template-columns: repeat(4, 1fr)"] .yfj-jiugong-cell {
+            padding: 8px 2px !important;
+        }
+        .yfj-jiugong-container div[style*="grid-template-columns: repeat(4, 1fr)"] div[style*="font-size: 15px"] {
+            font-size: 12px !important;
+        }
+
+        /* 4. 优化底部批示卡片的间距，更加紧凑 */
+        .yfj-desc-content > div { padding: 12px !important; line-height: 1.6 !important; }
+    }
 </style>
 
 <div class="yfj-xk-wrapper">

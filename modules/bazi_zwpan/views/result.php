@@ -80,7 +80,7 @@ $renderZwCell = function($index) use ($gong_pan) {
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
-
+    .yfj-result-wrapper * { box-sizing: border-box; }
     /* 紫微十二宫 CSS Grid 网格布局 */
     .yfj-zw-grid {
         display: grid;
@@ -137,6 +137,45 @@ $renderZwCell = function($index) use ($gong_pan) {
     /* 内部小元素样式 */
     .yfj-sihua-badge { background: #ea580c; color: #fff; border-radius: 2px; padding: 0 3px; font-size: 11px; margin-left: 2px; }
     .yfj-zw-footer { margin-top: 8px; border-top: 1px dashed #e2e8f0; padding-top: 4px; }
+
+    /* 移动端紫微排盘专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 外层包裹框允许横向微滑动，绝对防止右侧裁切，并减小留白 */
+        .yfj-result-wrapper > div:first-of-type {
+            padding: 8px !important;
+            overflow-x: auto;
+        }
+
+        /* 2. 锁定紫微盘最小宽度并压缩行高，避免小屏手机上格子挤压变形 */
+        .yfj-zw-grid {
+            min-width: 360px;
+            grid-template-rows: repeat(4, minmax(105px, auto));
+        }
+
+        /* 3. 极度压缩宫位内边距和基础字体 */
+        .yfj-zw-cell {
+            padding: 4px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        /* 4. 压缩中宫（命主信息区）的边距与字体 */
+        .yfj-zw-center {
+            padding: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .yfj-zw-center h3 {
+            font-size: 15px !important;
+            margin-bottom: 5px !important;
+        }
+
+        /* 5. 缩小星曜、四化小标签与底部信息，给格子腾出空间 */
+        .yfj-zw-stars span { font-size: 10px !important; }
+        .yfj-sihua-badge { font-size: 10px; padding: 0 2px; }
+        .yfj-zw-footer { font-size: 11px; margin-top: 4px; padding-top: 2px; }
+        .yfj-zw-footer > div > span:last-child { font-size: 12px !important; } /* 右下角命宫/兄弟宫等 */
+    }
 </style>
 
 <div class="yfj-result-wrapper">

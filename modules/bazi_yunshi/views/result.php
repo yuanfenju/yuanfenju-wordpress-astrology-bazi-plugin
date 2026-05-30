@@ -24,12 +24,13 @@ $bazi_str = trim(($base['yeargz'] ?? '') . ' ' . ($base['monthgz'] ?? '') . ' ' 
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
 
     /* 基础信息网格 */
-    .yfj-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 14px; line-height: 1.6; }
+    .yfj-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; font-size: 14px; line-height: 1.6; }
     .yfj-info-grid strong { color: #1e293b; }
 
     /* ================= 新的运势贴士布局 ================= */
@@ -70,6 +71,27 @@ $bazi_str = trim(($base['yeargz'] ?? '') . ' ' . ($base['monthgz'] ?? '') . ' ' 
 
     .yfj-badge-red { color: #dc2626; font-weight: 600; }
     .yfj-highlight { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #0f172a; font-weight: 500; }
+
+    /* 移动端统一专属适配（排盘、运势、流盘通用） */
+    @media (max-width: 600px) {
+        /* 1. 全局：缩小面板内边距和网格间距，给核心内容腾出展示空间 */
+        .yfj-panel-body { padding: 12px; }
+        .yfj-info-grid { gap: 8px; }
+
+        /* 2. 八字排盘 & 八字流盘：极度压缩数据表格的内边距和字体 */
+        .yfj-table th, .yfj-table td { padding: 6px 4px; font-size: 12px; }
+        .yfj-col-header { width: 45px; } /* 流盘左侧标题栏压缩 */
+
+        /* 3. 八字每日运势：压缩运势贴士卡片 */
+        .yfj-ys-tip-small { padding: 8px 4px; min-width: 30%; } /* 让上面5个小贴士更好折行 */
+        .yfj-ys-tip-large-label { width: 75px; min-width: 75px; font-size: 12px; }
+        .yfj-ys-tip-large-val { padding: 8px 10px; font-size: 13px; }
+        .yfj-ys-score-label { width: 65px; font-size: 13px; }
+
+        /* 4. 八字流盘：压缩底部流日流时手风琴面板的间距 */
+        .yfj-lr-summary { padding: 10px; font-size: 13px; }
+        .yfj-lr-summary div[style*="gap:15px"] { gap: 8px !important; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">

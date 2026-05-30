@@ -40,9 +40,10 @@ if ($lang_opt === 'zh-tw') {
 
     <style>
         .yfj-synastry-result { font-family: -apple-system, sans-serif; color: #334155; line-height: 1.6; }
+        .yfj-synastry-result * { box-sizing: border-box; }
 
         /* 双方信息头部 */
-        .yfj-info-header { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .yfj-info-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-bottom: 20px; }
         .yfj-info-box { padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; }
 
         /* SVG 容器：强制约束 */
@@ -65,6 +66,26 @@ if ($lang_opt === 'zh-tw') {
 
         /* 解析块 */
         .yfj-desc-block { background: #fdfaf6; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid var(--yfj-primary, #c99a5b); }
+
+        /* 双人合盘移动端专属适配 */
+        @media (max-width: 600px) {
+            /* 1. 压缩大白框和各个模块的内边距，给文本和数据表留出横向空间 */
+            .yfj-panel-body { padding: 12px; }
+            .yfj-info-box { padding: 12px; }
+            .yfj-svg-wrap { padding: 10px; margin-bottom: 15px; }
+            .yfj-table-box { padding: 10px; }
+
+            /* 2. 优化视角切换标签，防止文字折行挤偏 */
+            .yfj-view-tabs { padding: 4px; gap: 2px; }
+            .yfj-tab-btn { padding: 8px 4px; font-size: 12px; }
+
+            /* 3. 压缩大量硬核数据图表的内边距与字体，减小横向滑动的幅度 */
+            .yfj-table th, .yfj-table td { padding: 6px 4px; font-size: 11.5px; }
+
+            /* 4. 适度调小下方解析文本区块的内边距 */
+            .yfj-desc-block { padding: 12px; font-size: 13px; margin-bottom: 10px; }
+            .yfj-data-section > div[style*="padding: 15px;"] { padding: 12px !important; }
+        }
     </style>
 
     <div class="yfj-synastry-result">

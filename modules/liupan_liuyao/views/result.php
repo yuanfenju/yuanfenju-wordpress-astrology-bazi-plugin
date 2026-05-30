@@ -78,6 +78,7 @@ if (!function_exists('yfj_render_single_yao')) {
 
 <style>
     .yfj-ly-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-ly-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; }
@@ -106,6 +107,16 @@ if (!function_exists('yfj_render_single_yao')) {
     .yfj-desc-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .yfj-desc-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
     @media (min-width: 768px) { .yfj-desc-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* 六爻移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 缩小面板的内边距，防止留白过多挤压文字 */
+        .yfj-panel-body { padding: 15px; }
+        .yfj-info-box { padding: 12px; }
+
+        /* 重点：缩小六爻盘滑动容器的内边距，让小屏幕能露出更多的卦图区域，滑动更顺畅 */
+        .yfj-paipan-container { padding: 15px 10px; margin-bottom: 20px; }
+    }
 </style>
 
 <div class="yfj-ly-wrapper">

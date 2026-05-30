@@ -34,6 +34,7 @@ $gua_binary = isset($gua_map[$gua_id]) ? $gua_map[$gua_id] : '111111';
 
 <style>
     .yfj-yg-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "KaiTi", serif; color: #2c2c2c; }
+    .yfj-yg-wrapper * { box-sizing: border-box; }
 
     /* 古风面板容器 */
     .yfj-yg-panel { background: #fdfbf7; border: 1px solid #e5d9c5; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; position: relative; }
@@ -77,7 +78,7 @@ $gua_binary = isset($gua_map[$gua_id]) ? $gua_map[$gua_id] : '111111';
     .yfj-yg-label { font-weight: bold; color: #5c4b37; background: #f5eedf; padding: 2px 6px; border-radius: 4px; margin-right: 8px; font-size: 13px; }
 
     /* 解卦六大维度网格 */
-    .yfj-yg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 10px; }
+    .yfj-yg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-top: 10px; }
     .yfj-yg-card { background: rgba(255, 255, 255, 0.6); border: 1px solid #e5d9c5; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
     .yfj-yg-card-header { background: rgba(229, 217, 197, 0.4); padding: 10px 15px; font-weight: bold; color: #5c4b37; border-bottom: 1px dashed #e5d9c5; font-family: "KaiTi", serif; font-size: 16px; display: flex; align-items: center; gap: 6px; }
     .yfj-yg-card-body { padding: 15px; font-size: 14px; color: #333; flex: 1; }
@@ -85,6 +86,16 @@ $gua_binary = isset($gua_map[$gua_id]) ? $gua_map[$gua_id] : '111111';
     /* 底部按钮 */
     .yfj-btn-retoss { display: inline-block; background: #fdfbf7; color: #8b0000; border: 1px solid #8b0000; padding: 10px 30px; border-radius: 6px; font-size: 16px; font-family: "KaiTi", serif; font-weight: bold; cursor: pointer; transition: 0.3s; text-decoration: none; }
     .yfj-btn-retoss:hover { background: #8b0000; color: #fff; }
+
+    /* 摇卦移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 缩小面板的内边距，给内部卡片腾出更多展示空间 */
+        .yfj-yg-panel-body { padding: 15px; }
+        /* 缩小顶部本卦信息的间距 */
+        .yfj-yg-hero { gap: 15px; }
+        /* 缩小卦名的字体，防止过长折行 */
+        .yfj-yg-name { font-size: 20px; }
+    }
 </style>
 
 <div class="yfj-yg-wrapper">
@@ -188,8 +199,9 @@ $gua_binary = isset($gua_map[$gua_id]) ? $gua_map[$gua_id] : '111111';
 </div>
 
 <script>
-    // 在展示结果时，确保表单前导语隐藏，使得界面更整洁
+    // 在展示结果时，确保表单前导语和起卦按钮隐藏，使得界面更整洁
     jQuery(document).ready(function($){
         $('.yfj-yaogua-intro').hide();
+        $('.yfj-ajax-form').hide(); /* 新增这一行：隐藏诚心起卦按钮所在的表单 */
     });
 </script>

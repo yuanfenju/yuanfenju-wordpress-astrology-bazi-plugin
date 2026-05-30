@@ -40,6 +40,7 @@ if ($lang_opt === 'zh-tw') {
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; }
@@ -57,6 +58,22 @@ if ($lang_opt === 'zh-tw') {
     .yfj-desc-block { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #e2e8f0; font-size: 14.5px; line-height: 1.8; color: #475569; }
     .yfj-desc-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .yfj-badge-pattern { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; margin-right: 5px; border: 1px solid #fca5a5; }
+
+    /* 本命星盘移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 减小面板内边距，为核心文本、图表和表格腾出空间 */
+        .yfj-panel-body { padding: 15px; }
+        .yfj-info-grid { gap: 8px; }
+
+        /* 2. 极度压缩行星、宫位、相位三大数据表格的内边距，提升单屏可视率 */
+        .yfj-table th, .yfj-table td { padding: 8px 6px; font-size: 12px; }
+
+        /* 3. 压缩星盘 SVG 图表的上下边距 */
+        .yfj-svg-container { padding: 10px !important; }
+
+        /* 4. 优化下方大量文本解析区块的间距 */
+        .yfj-desc-block { padding-bottom: 12px; margin-bottom: 12px; font-size: 13.5px; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">

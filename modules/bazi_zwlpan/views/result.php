@@ -92,7 +92,7 @@ $renderZwlCell = function($index) use ($gong_pan, $renderSihua, $base) {
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
-
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-zw-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -148,6 +148,49 @@ $renderZwlCell = function($index) use ($gong_pan, $renderSihua, $base) {
 
     @keyframes yfj-pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     .yfj-loading-mask { animation: yfj-pulse 1.5s infinite; filter: blur(2px); pointer-events: none; }
+
+    /* 移动端紫微排盘深度适配 */
+    @media (max-width: 600px) {
+        /* 1. 削减外层大白框的四周留白，并允许横向微滑动，绝对防止右侧裁切 */
+        .yfj-result-wrapper > div:first-of-type {
+            padding: 8px !important;
+            overflow-x: auto;
+        }
+
+        /* 2. 锁定盘面的最小宽度，防止在极小屏幕(如小屏iPhone)上被挤成竖条乱码 */
+        .yfj-zw-grid {
+            min-width: 360px;
+            grid-template-rows: repeat(4, minmax(105px, auto)); /* 压缩行高 */
+        }
+
+        /* 3. 极度压缩宫位内边距和字体 */
+        .yfj-zw-cell {
+            padding: 4px;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        /* 4. 压缩中宫（命主信息区）的边距与字体 */
+        .yfj-zw-center {
+            padding: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .yfj-zw-center h3 {
+            font-size: 15px !important;
+        }
+
+        /* 5. 缩小星耀与四化小标签，给宫位腾空间 */
+        .yfj-zw-stars span {
+            font-size: 10px !important;
+        }
+
+        /* 6. 压缩流年、小限与底部宫位名称大小 */
+        .yfj-zw-footer { font-size: 11px; }
+        .yfj-zw-footer > div { font-size: 10px !important; margin-top: 2px !important; }
+        .yfj-zw-footer > div:last-child > span:first-child { font-size: 10px !important; }
+        .yfj-zw-footer > div:last-child > span:last-child { font-size: 12px !important; } /* 右下角命宫/兄弟宫等 */
+    }
 </style>
 
 <div class="yfj-result-wrapper">

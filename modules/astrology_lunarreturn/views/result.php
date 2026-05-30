@@ -35,7 +35,8 @@ elseif ($lang_opt === 'en-us') { $sf = 'english'; }
 
 <style>
     .yfj-lunar-return-result { font-family: -apple-system, sans-serif; color: #334155; line-height: 1.6; }
-    .yfj-info-header { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .yfj-lunar-return-result * { box-sizing: border-box; }
+    .yfj-info-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-bottom: 20px; }
     .yfj-info-box { padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; }
     .yfj-svg-wrap { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 25px; }
     .yfj-svg-item svg { width: 100%; max-width: 600px; height: auto; display: inline-block; }
@@ -46,6 +47,21 @@ elseif ($lang_opt === 'en-us') { $sf = 'english'; }
     .yfj-table td { padding: 8px; border: 1px solid #ddd; vertical-align: middle; }
     .yfj-table tr:hover { background: #fcfcfc; }
     .yfj-desc-block { background: #fdfaf6; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid #d9534f; }
+
+    /* 月返照星盘移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩面板与外层的大白框内边距，给核心文本和图表留出空间 */
+        .yfj-info-box { padding: 12px; }
+        .yfj-svg-wrap { padding: 10px; margin-bottom: 15px; }
+        .yfj-table-box { padding: 10px; }
+
+        /* 2. 极度压缩星曜、宫位、相位三个大数据表单的内边距，减少横向滑动的幅度 */
+        .yfj-table th, .yfj-table td { padding: 6px 4px; font-size: 12px; }
+
+        /* 3. 优化底部红色边框报告在手机端的排版 */
+        .yfj-data-section > div[style*="padding: 15px;"] { padding: 12px !important; }
+        .yfj-desc-block { padding: 12px; font-size: 13px; }
+    }
 </style>
 
 <div class="yfj-lunar-return-result">

@@ -31,16 +31,26 @@ $xz      = $data['xz'] ?? '';
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
 
-    .yfj-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 14px; line-height: 1.6; }
+    .yfj-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; font-size: 14px; line-height: 1.6; }
     .yfj-info-grid strong { color: #1e293b; }
 
     .yfj-badge-red { color: #dc2626; font-weight: 600; }
     .yfj-badge-blue { color: #2563eb; font-weight: 600; }
     .yfj-highlight { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #0f172a; font-weight: 500; }
+
+    /* 移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 缩小面板的内边距，防止留白过多挤压文字内容 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 缩小基础信息的网格间距 */
+        .yfj-info-grid { gap: 8px; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">
