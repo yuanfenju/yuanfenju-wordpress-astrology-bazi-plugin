@@ -24,6 +24,7 @@ $score_color = $score >= 80 ? '#dc2626' : ($score >= 60 ? '#d97706' : '#2563eb')
 
 <style>
     .yfj-cy-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-cy-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; font-size: 16px; color: #0f172a; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
@@ -58,6 +59,32 @@ $score_color = $score >= 80 ? '#dc2626' : ($score >= 60 ? '#d97706' : '#2563eb')
     /* 警示与大师建议 */
     .yfj-alert-box { background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; padding: 15px; border-radius: 6px; margin-top: 20px; }
     .yfj-master-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #22c55e; padding: 15px; border-radius: 6px; margin-top: 20px; }
+
+    /* 流年财运移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 缩小大面板整体内边距，给文本和网格释放横向空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 核心：由于八字表格信息极多，强制为其增加横向滚动容器保护，防止撑破大白框 */
+        .yfj-bazi-table {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+        }
+
+        /* 3. 优化流年大分展示区块 */
+        .yfj-cy-score-box { padding: 15px; margin-bottom: 15px; }
+        .yfj-cy-score-num { font-size: 36px; }
+
+        /* 4. 将 12 个月的月运势网格调整为最适合手机阅读的单列平铺 */
+        .yfj-month-grid { grid-template-columns: 1fr; gap: 10px; }
+        .yfj-month-body { padding: 10px; font-size: 13px; }
+
+        /* 5. 缩减底部警示与建议区块的内边距 */
+        .yfj-alert-box, .yfj-master-box { padding: 12px; font-size: 13.5px; }
+    }
 </style>
 
 <div class="yfj-cy-wrapper">

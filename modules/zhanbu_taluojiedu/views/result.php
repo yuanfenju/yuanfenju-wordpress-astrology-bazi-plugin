@@ -35,6 +35,7 @@ if (empty($data) || !is_array($data) || empty($data['cards'])) {
     }
 
     .yfj-tarot-wrapper { font-family: serif; color: #e2e8f0; }
+    .yfj-tarot-wrapper * { box-sizing: border-box; }
 
     /* 桌面布景 */
     .yfj-tarot-table { background: #0f172a; border: 1px solid #312e81; border-radius: 12px; padding: 25px 15px; margin-top: 20px; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); }
@@ -75,6 +76,22 @@ if (empty($data) || !is_array($data) || empty($data['cards'])) {
     .yfj-tarot-p { font-size: 14px; color: #cbd5e1; line-height: 1.8; margin-bottom: 10px; }
     .yfj-tarot-label { color: #818cf8; font-weight: bold; }
     .yfj-tarot-highlight { color: #fbbf24; font-weight: bold; }
+
+    /* 塔罗牌移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 缩小桌面布景和文本面板的内边距，防止撑破屏幕 */
+        .yfj-tarot-table { padding: 15px 10px; }
+        .yfj-tarot-panel { padding: 15px; }
+
+        /* 2. 适当缩小卡牌间距和卡牌尺寸，确保多数手机能在一行放下3张牌 */
+        .yfj-cards-container { gap: 10px; }
+        .yfj-card-slot { width: 100px; }
+        .yfj-flip-card { height: 166px; } /* 保持塔罗牌的经典高宽比例 */
+
+        /* 3. 缩小提示文字大小 */
+        .yfj-tarot-instruction { font-size: 14px; margin-bottom: 15px; }
+        .yfj-card-position-name { font-size: 11px; margin-bottom: 5px; }
+    }
 </style>
 
 <div class="yfj-result-wrapper yfj-tarot-wrapper">

@@ -44,7 +44,7 @@ if (!empty($dayun_info) && is_array($dayun_info)) {
 
     <style>
         .yfj-jingsuan-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
-
+        .yfj-jingsuan-wrapper * { box-sizing: border-box; }
         /* 统一的 Panel 面板样式 */
         .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
         .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
@@ -69,13 +69,19 @@ if (!empty($dayun_info) && is_array($dayun_info)) {
         .yfj-dy-current::before { background: var(--yfj-primary, #c99a5b); transform: scale(1.3); box-shadow: 0 0 0 4px rgba(201, 154, 91, 0.1); }
         .yfj-tag-current { background: var(--yfj-primary, #c99a5b); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 10px; }
 
-        .yfj-ln-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+        .yfj-ln-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-top: 15px; }
         .yfj-ln-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; transition: all 0.2s; }
         .yfj-ln-card:hover { border-color: var(--yfj-primary, #c99a5b); background: #fff; }
         .yfj-ln-current { border: 2px solid var(--yfj-primary, #c99a5b) !important; background: #fffcf8 !important; box-shadow: 0 4px 12px rgba(201,154,91,0.08); }
 
         .yfj-past-toggle { background: #f1f5f9; color: #64748b; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-size: 13px; font-weight: bold; transition: background 0.2s; }
         .yfj-past-toggle:hover { background: #e2e8f0; }
+        /* 移动端专属适配 */
+        @media (max-width: 600px) {
+            .yfj-panel-body { padding: 12px; } /* 缩小移动端的外层内边距 */
+            .yfj-fortune-section { margin-left: 5px; padding-left: 15px; } /* 缩小时间轴在手机上的缩进 */
+            .yfj-dy-block::before { left: -22px; width: 10px; height: 10px; } /* 微调时间轴圆点位置 */
+        }
     </style>
 
     <div class="yfj-jingsuan-wrapper">

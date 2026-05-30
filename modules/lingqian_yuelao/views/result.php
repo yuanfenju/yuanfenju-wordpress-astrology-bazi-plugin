@@ -26,6 +26,7 @@ $image_url = YFJ_PLUGIN_URL . 'assets/image/lingqian/' . $lang_suffix . '/yuelao
 
 <style>
     .yfj-lq-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-lq-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; position: relative; }
@@ -35,6 +36,18 @@ $image_url = YFJ_PLUGIN_URL . 'assets/image/lingqian/' . $lang_suffix . '/yuelao
     .yfj-list-item:last-child { margin-bottom: 0; }
     .yfj-list-title { font-weight: bold; color: #be185d; margin-bottom: 10px; border-bottom: 1px dashed #fbcfe8; padding-bottom: 8px; font-size: 15.5px; display: block; }
     .yfj-list-content { color: #334155; font-size: 14.5px; line-height: 1.8; display: block; text-align: justify; }
+
+    /* 月老灵签移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 减小面板内边距，为核心文本腾出更多横向空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 缩小右上角月老小画像的尺寸，防止左侧抽签结果和吉凶语被挤压过度 */
+        .yfj-panel-body > div[style*="float: right"] { width: 85px !important; margin: 0 0 10px 10px !important; }
+
+        /* 3. 适度微调第二部分解签卡片的内边距 */
+        .yfj-list-item { padding: 12px; }
+    }
 </style>
 
 <div class="yfj-lq-wrapper">
@@ -111,8 +124,9 @@ $image_url = YFJ_PLUGIN_URL . 'assets/image/lingqian/' . $lang_suffix . '/yuelao
     <?php echo $this->get_disclaimer_html(); ?>
 
     <div style="text-align: center; margin-top: 10px;">
-        <button onclick="jQuery('.yfj-result-area').hide(); jQuery('#yfj-qiuqian-ui').fadeIn(); jQuery('.yfj-ajax-form').show();"
-                style="background: #fdf2f8; color: #be185d; border: 1px solid #fbcfe8; padding: 12px 30px; border-radius: 50px; font-size: 14px; font-weight: bold; cursor: pointer;">
+        <button type="button"
+                onclick="this.disabled=true; this.style.opacity='0.6'; this.innerText='<?php echo $this->t('正在重置...'); ?>'; window.location.reload();"
+                style="background: #e2e8f0; color: #334155; border: none; padding: 12px 30px; border-radius: 50px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
             <?php echo $this->t('返回重求'); ?>
         </button>
     </div>

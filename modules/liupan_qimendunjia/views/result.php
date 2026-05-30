@@ -36,6 +36,7 @@ $gong_order = [3, 4, 5, 2, 8, 6, 1, 0, 7]; // 对应你的 $list.gong_pan.X 索�
 
 <style>
     .yfj-qm-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-qm-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 12px 15px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; }
     .yfj-panel-body { padding: 20px; font-size: 14px; line-height: 1.8; }
@@ -74,6 +75,21 @@ $gong_order = [3, 4, 5, 2, 8, 6, 1, 0, 7]; // 对应你的 $list.gong_pan.X 索�
     /* 状态颜色说明图例 */
     .yfj-qm-legend { text-align: center; font-size: 13px; margin-top: 15px; padding: 10px; background: #f8fafc; border-radius: 6px; }
     .yfj-legend-item { display: inline-block; padding: 2px 6px; border-radius: 4px; color: #fff; margin: 0 5px; font-weight: bold; }
+
+    /* 移动端九宫格专属适配 */
+    @media (max-width: 600px) {
+        .yfj-panel-body { padding: 12px; } /* 缩减最外层白板的留白 */
+        .yfj-jiugong-container { gap: 2px; padding: 2px; } /* 缩小九宫格之间的缝隙 */
+        .yfj-gong-box { padding: 4px 6px; min-height: 100px; } /* 极度压缩单宫内的边距 */
+
+        /* 缩小宫内所有字体，防止文字把格子撑破 */
+        .yfj-gong-top, .yfj-gong-bottom { font-size: 12px; }
+        .yfj-gong-mid { font-size: 14px; gap: 4px !important; }
+
+        /* 强制覆盖内联的 gap: 8px 设置，收紧八神与马空标签的间距 */
+        .yfj-gong-top > div { gap: 3px !important; }
+        .yfj-qm-marks { font-size: 11px; transform: scale(0.9); transform-origin: left center; }
+    }
 </style>
 
 <div class="yfj-qm-wrapper">

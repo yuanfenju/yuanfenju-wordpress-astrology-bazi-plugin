@@ -16,6 +16,7 @@ if (empty($data) || !is_array($data)) {
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid var(--yfj-border, #e2e8f0); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid var(--yfj-border, #e2e8f0); font-weight: 600; font-size: 16px; color: var(--yfj-text-dark, #0f172a); display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
@@ -59,6 +60,29 @@ if (empty($data) || !is_array($data)) {
     .yfj-shichen-table th { background: #f1f5f9; color: #334155; font-weight: 600; }
     .yfj-jixiong-ji { color: #dc2626; font-weight: bold; }
     .yfj-jixiong-xiong { color: #1e293b; }
+
+    /* 老黄历与时辰吉凶移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩大白框的整体内边距，给文本和网格腾出更多宝贵的横向空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 优化日期头部特效字号，使其在小屏手机上不显得突兀 */
+        .yfj-hl-yangli { font-size: 26px; margin: 6px 0; }
+        .yfj-hl-yinli { font-size: 14px; }
+
+        /* 3. 核心：将“宜/忌”左右并排改为流式上下平铺，给神煞、动土、嫁娶等长文本释放 100% 的宽度 */
+        .yfj-yiji-box { flex-direction: column; gap: 10px; }
+        .yfj-yiji-item { padding: 12px; }
+
+        /* 4. 优化 6 宫格基本属性与 4 方位网格的自适应字号 */
+        .yfj-hl-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+        .yfj-hl-grid-4cols { gap: 10px; }
+        .yfj-hl-grid-item { padding: 10px 6px; }
+        .yfj-hl-grid-val { font-size: 13px; }
+
+        /* 5. 适度压缩时辰表格在滚动容器内部的单元格留白与字号 */
+        .yfj-shichen-table th, .yfj-shichen-table td { padding: 8px 4px; font-size: 12px; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">

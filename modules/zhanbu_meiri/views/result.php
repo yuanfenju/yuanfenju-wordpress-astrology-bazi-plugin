@@ -19,6 +19,7 @@ $desc = $base['description'] ?? [];
 
 <style>
     .yfj-mr-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-mr-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; }
@@ -41,13 +42,6 @@ $desc = $base['description'] ?? [];
     }
     .yfj-block-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
 
-    /* 奇数个时的最后一个元素自动跨列并居中 */
-    .yfj-block-item.is-last-odd {
-        grid-column: 1 / -1;
-        align-items: center; /* 整个方块内容居中 */
-        text-align: center;
-    }
-
     .yfj-block-title {
         font-weight: bold;
         color: #b45309;
@@ -61,6 +55,18 @@ $desc = $base['description'] ?? [];
         color: #334155;
         font-size: 14px;
         line-height: 1.6;
+    }
+
+    /* 随机数解卦移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 缩小大面板整体内边距，给核心文本腾出横向展示空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 核心：在手机端将原本的双列宫格强制拉回单列向下排布，杜绝任何字数过多导致的挤压 */
+        .yfj-block-grid { grid-template-columns: 1fr; gap: 10px; }
+
+        /* 3. 统一移动端单列卡片内的对齐方向和留白，保障呼吸感 */
+        .yfj-block-item { padding: 12px; }
     }
 </style>
 
@@ -127,23 +133,15 @@ $desc = $base['description'] ?? [];
                     }
                 }
 
-                $total = count($valid_items);
-                $count = 0;
-
-                // 循环输出方块
+                // 循环输出方块 (去除了判断奇数最后一个的跨列逻辑)
                 foreach ($valid_items as $k => $v) {
-                    $count++;
-                    // 判断是否是奇数个的最后一个（比如第7个“行人”）
-                    $is_last_odd = ($total % 2 !== 0 && $count === $total) ? ' is-last-odd' : '';
                     ?>
-
-                    <div class="yfj-block-item<?php echo $is_last_odd; ?>">
-                        <div style="<?php echo $is_last_odd ? '' : 'text-align: center;'; ?>">
+                    <div class="yfj-block-item">
+                        <div style="text-align: center;">
                             <span class="yfj-block-title"><?php echo esc_html(sprintf($this->t('【%s】'), $this->t($k))); ?></span>
                         </div>
                         <span class="yfj-block-content"><?php echo esc_html($v); ?></span>
                     </div>
-
                     <?php
                 }
                 ?>
@@ -154,12 +152,11 @@ $desc = $base['description'] ?? [];
     <!-- 公共免责声明 -->
     <?php echo $this->get_disclaimer_html(); ?>
 
-    <!-- 返回重测按钮 -->
     <div style="text-align: center; margin-top: 10px;">
-        <button onclick="jQuery('.yfj-result-area').hide(); jQuery('#yfj-qiuqian-ui').fadeIn(); jQuery('.yfj-ajax-form').show();"
+        <button type="button"
+                onclick="this.disabled=true; this.style.opacity='0.6'; this.innerText='<?php echo $this->t('正在重置...'); ?>'; window.location.reload();"
                 style="background: #e2e8f0; color: #334155; border: none; padding: 12px 30px; border-radius: 50px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
-            <?php echo $this->t('返回重测'); ?>
+            <?php echo $this->t('返回重求'); ?>
         </button>
     </div>
-
 </div>

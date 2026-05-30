@@ -20,6 +20,7 @@ $type_name = esc_html($this->t($api_type));
 
 <style>
     .yfj-result-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-result-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #fecdd3; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(225,29,72,0.05); overflow: hidden; }
     .yfj-panel-heading { background: #fff1f2; padding: 14px 20px; border-bottom: 1px solid #fecdd3; font-weight: 600; font-size: 16px; color: #be123c; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; color: #475569; }
@@ -47,6 +48,26 @@ $type_name = esc_html($this->t($api_type));
     /* 具体运势长文本 */
     .yfj-ys-text-box { background: #fff1f2; padding: 15px; border-radius: 6px; border-left: 3px solid #e11d48; margin-bottom: 20px; font-size: 14px; color: #1e293b; }
     .yfj-ys-text-title { font-size: 12px; font-weight: bold; color: #e11d48; margin-bottom: 5px; text-transform: uppercase; }
+
+    /* 生肖运势移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩面板内边距，释放横向可见空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 优化顶部5个短贴士卡片，强制设为两列或三列动态平铺，防止字体挤压变宽 */
+        .yfj-ys-tips {
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .yfj-ys-tip-item { padding: 8px 4px; }
+        .yfj-ys-tip-title { font-size: 11px; }
+        .yfj-ys-tip-val { font-size: 13px; }
+
+        /* 3. 微调进度条标签宽度，避免在极窄屏幕上与右侧数字重叠 */
+        .yfj-ys-score-label { width: 65px; font-size: 13px; }
+        .yfj-ys-score-row { gap: 10px; }
+    }
 </style>
 
 <div class="yfj-result-wrapper">

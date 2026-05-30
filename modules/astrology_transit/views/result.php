@@ -49,9 +49,10 @@ if ($lang_opt === 'zh-tw') {
 
 <style>
     .yfj-transit-result { font-family: -apple-system, sans-serif; color: #334155; line-height: 1.6; }
+    .yfj-transit-result * { box-sizing: border-box; }
 
     /* 信息头部 */
-    .yfj-info-header { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .yfj-info-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-bottom: 20px; }
     .yfj-info-box { padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; }
 
     /* SVG 容器 */
@@ -69,6 +70,22 @@ if ($lang_opt === 'zh-tw') {
 
     /* 解析块 */
     .yfj-desc-block { background: #fdfaf6; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid var(--yfj-primary, #c99a5b); }
+
+    /* 行运星盘移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 压缩面板与各模块内边距，给文本和硬核图表腾出空间 */
+        .yfj-panel-body { padding: 12px; }
+        .yfj-info-box { padding: 12px; }
+        .yfj-svg-wrap { padding: 10px; margin-bottom: 15px; }
+        .yfj-table-box { padding: 10px; }
+
+        /* 2. 压缩四个硬核行星、宫位、数据表的内边距与字体，使横向手势拖拽滑动更平稳 */
+        .yfj-table th, .yfj-table td { padding: 6px 4px; font-size: 11.5px; }
+
+        /* 3. 优化下方大量文本解析卡片的内边距与字号 */
+        .yfj-desc-block { padding: 12px; font-size: 13px; margin-bottom: 10px; }
+        .yfj-data-section > div[style*="padding: 15px;"] { padding: 12px !important; }
+    }
 </style>
 
 <div class="yfj-transit-result">

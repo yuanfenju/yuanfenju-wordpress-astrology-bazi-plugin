@@ -41,7 +41,8 @@ elseif ($lang_opt === 'en-us') { $sf = 'english'; }
 
 <style>
     .yfj-solar-arc-result { font-family: -apple-system, sans-serif; color: #334155; line-height: 1.6; }
-    .yfj-info-header { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .yfj-solar-arc-result * { box-sizing: border-box; }
+    .yfj-info-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 15px; margin-bottom: 20px; }
     .yfj-info-box { padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; }
     .yfj-svg-wrap { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 25px; }
     .yfj-svg-item svg { width: 100%; max-width: 600px; height: auto; display: inline-block; }
@@ -52,6 +53,21 @@ elseif ($lang_opt === 'en-us') { $sf = 'english'; }
     .yfj-table td { padding: 8px; border: 1px solid #ddd; vertical-align: middle; }
     .yfj-table tr:hover { background: #fcfcfc; }
     .yfj-desc-block { background: #fdfaf6; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid var(--yfj-primary, #c99a5b); }
+
+    /* 太阳弧推运移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 缩小各个模块的内边距，给排盘和表格腾出更多横向空间 */
+        .yfj-info-box { padding: 12px; }
+        .yfj-svg-wrap { padding: 10px; margin-bottom: 15px; }
+        .yfj-table-box { padding: 10px; }
+
+        /* 2. 极度压缩数据表格的内边距和字体，减少横向滑动的幅度 */
+        .yfj-table th, .yfj-table td { padding: 6px 4px; font-size: 12px; }
+
+        /* 3. 稍微调小解析区块的内边距 */
+        .yfj-desc-block { padding: 12px; font-size: 13px; }
+        .yfj-data-section > div[style*="padding: 15px;"] { padding: 12px !important; }
+    }
 </style>
 
 <div class="yfj-solar-arc-result">

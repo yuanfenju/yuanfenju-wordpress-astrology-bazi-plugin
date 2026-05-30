@@ -21,6 +21,7 @@ $pan_info = $base['pan_info'] ?? [];
 
 <style>
     .yfj-jkj-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-jkj-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14.5px; line-height: 1.8; }
@@ -37,6 +38,22 @@ $pan_info = $base['pan_info'] ?? [];
     .yfj-keyword-blue { color: #2563eb; }
     .yfj-keyword-purple { color: #7e22ce; }
     .yfj-keyword-green { color: #16a34a; }
+
+    /* 金口诀起课移动端专属适配 (修复右侧留白版) */
+    @media (max-width: 600px) {
+        /* 1. 压缩面板整体内边距，释放横向生存空间 */
+        .yfj-panel-body { padding: 15px; }
+
+        /* 2. 优化基本信息卡片，缩小间距 */
+        .yfj-info-box { padding: 12px; gap: 8px; }
+        .yfj-info-item { margin-bottom: 5px; font-size: 13.5px; }
+        span[style*="visibility: hidden"] { display: none !important; }
+
+        /* 3. 核心修复：去掉原本强制的 display:block，让原生 table 自动 100% 撑满两边对齐。
+              只微调单元格的内边距和字号，防止文字太挤 */
+        .yfj-jkj-table th, .yfj-jkj-table td { padding: 10px 4px; font-size: 13px; }
+    }
+    }
 </style>
 
 <div class="yfj-jkj-wrapper">

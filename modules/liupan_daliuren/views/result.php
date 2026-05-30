@@ -44,12 +44,13 @@ $dlr_layout = [
 
 <style>
     .yfj-dlr-wrapper { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #334155; }
+    .yfj-dlr-wrapper * { box-sizing: border-box; }
     .yfj-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; overflow: hidden; }
     .yfj-panel-heading { background: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0f172a; font-size: 16px; display: flex; align-items: center; gap: 8px; }
     .yfj-panel-body { padding: 20px; font-size: 14px; line-height: 1.8; }
 
     /* 基本信息 */
-    .yfj-dlr-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+    .yfj-dlr-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 15px; }
     .yfj-dlr-info-col { background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; }
     .yfj-dlr-info-col p { margin: 0 0 8px 0; }
     .yfj-dlr-highlight { color: #dc2626; font-weight: bold; }
@@ -85,6 +86,25 @@ $dlr_layout = [
     @media (min-width: 600px) { .yfj-dlr-desc-grid { grid-template-columns: 1fr 1fr; } }
     .yfj-desc-item { background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
     .yfj-desc-label { font-weight: bold; color: #b45309; margin-bottom: 4px; display: block; }
+
+    /* 大六壬移动端专属适配 */
+    @media (max-width: 600px) {
+        /* 1. 缩小面板的内边距，给核心排盘留出空间 */
+        .yfj-panel-body { padding: 12px; }
+
+        /* 2. 极度压缩天地神盘 12 宫的间距和字体，确保能在手机上完美成环状 */
+        .yfj-dlr-12palace { gap: 2px; padding: 4px; }
+        .yfj-dlr-cell { padding: 6px 2px; gap: 4px; }
+        .yfj-c-shen, .yfj-c-tian { font-size: 14px; }
+        .yfj-c-di { font-size: 11px; }
+        .yfj-dlr-center-hole { font-size: 16px; letter-spacing: 2px; }
+
+        /* 3. 压缩四课与三传的尺寸 */
+        .yfj-dlr-sike { padding: 10px; }
+        .yfj-sike-col { font-size: 14px; gap: 6px; }
+        .yfj-sc-row { padding: 10px 12px; font-size: 14px; }
+        .yfj-sc-ganzhi { font-size: 16px; }
+    }
 </style>
 
 <div class="yfj-dlr-wrapper">
