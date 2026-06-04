@@ -199,7 +199,7 @@ abstract class YFJ_Base_Module {
             $api_key = get_option('yfj_api_key');
             if(empty($api_key)) wp_send_json_error('生产环境未配置 API Key');
 
-            $payload = array_merge($post_data, ['api_key' => $api_key, 'lang' => $lang]);
+            $payload = array_merge($post_data, ['api_key' => $api_key, 'lang' => $lang, 'plug_source'  => 'wordpress']);
             $api_url = "https://api.yuanfenju.com/index.php" . $this->api_endpoint;
 
             //将具体的 HTTP 请求剥离到独立方法，方便子类进行缓存拦截(缓存)
